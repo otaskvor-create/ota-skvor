@@ -1,0 +1,3126 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seyfor — Ota Škvor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    /* ── Local token overrides ──────────────────────────────── */
+    :root {
+      --seyfor-accent: #2a5cff;
+      --seyfor-accent-bg: #eef2ff;
+    }
+
+    /* ── Code block ─────────────────────────────────────────── */
+    .code-block {
+      background: #18181b;
+      border-radius: var(--radius);
+      padding: 0;
+      margin: 1.2rem 0;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid #2a2a2e;
+    }
+    .code-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid #2a2a2e;
+      background: #111113;
+    }
+    .code-tab {
+      padding: 0.55rem 1rem;
+      font-size: 0.75rem;
+      color: #666;
+      cursor: pointer;
+      border-right: 1px solid #2a2a2e;
+      transition: color 0.15s, background 0.15s;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .code-tab .tab-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #444;
+      transition: background 0.15s;
+    }
+    .code-tab.active { color: #e0e0e0; background: #18181b; }
+    .code-tab.active .tab-dot { background: #9cdcfe; }
+    .code-tab:not(.active):hover { color: #aaa; }
+    .code-panel { display: none; padding: 1.4rem 1.6rem; }
+    .code-panel.active { display: block; }
+    .code-panel pre {
+      font-family: 'DM Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.78rem;
+      line-height: 1.75;
+      color: #e0e0e0;
+      margin: 0;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .code-lang {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.9rem;
+      font-size: 0.6rem;
+      color: #444;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .token-comment { color: #6a9955; }
+    .token-prop    { color: #9cdcfe; }
+    .token-value   { color: #ce9178; }
+    .token-punct   { color: #808080; }
+    .token-kw      { color: #c586c0; }
+    .token-str     { color: #ce9178; }
+    .token-num     { color: #b5cea8; }
+    .token-fn      { color: #dcdcaa; }
+    .token-cls     { color: #4ec9b0; }
+    .token-builtin { color: #9cdcfe; }
+    .token-ns      { color: #4ec9b0; }
+    .token-attr    { color: #ce9178; }
+    .token-eq      { color: #808080; }
+
+    /* ── Play button inside code-block ─────────────────────── */
+    .code-run-btn {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.7rem;
+      font-family: inherit;
+      color: #3fba58;
+      background: rgba(63, 186, 88, 0.1);
+      border: 1px solid rgba(63, 186, 88, 0.28);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      align-self: center;
+      margin-right: 0.55rem;
+      line-height: 1;
+    }
+    .code-run-btn:hover {
+      background: rgba(63, 186, 88, 0.18);
+      border-color: rgba(63, 186, 88, 0.5);
+    }
+    .code-run-btn svg {
+      flex-shrink: 0;
+    }
+
+    /* ── Code run modal ─────────────────────────────────────── */
+    .coderun-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 10, 10, 0.82);
+      z-index: 600;
+      padding: 1.5rem;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .coderun-backdrop.open { display: flex; }
+    .coderun-card {
+      position: relative;
+      width: min(92vw, 900px);
+      max-height: 90vh;
+      background: var(--bg-card);
+      border-radius: calc(var(--radius) * 1.5);
+      border: 1px solid var(--border-light);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .coderun-backdrop.open .coderun-card {
+      animation: fadeInUp 0.22s ease;
+    }
+    .coderun-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.1rem;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--bg-card);
+      flex-shrink: 0;
+    }
+    .coderun-badge {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--fg-muted);
+    }
+    .coderun-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--fg);
+      margin-top: 0.15rem;
+    }
+    .coderun-close {
+      width: 2.2rem;
+      height: 2.2rem;
+      border: 1px solid var(--border-light);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--fg-muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .coderun-close:hover { border-color: var(--border); color: var(--fg); }
+    .coderun-content {
+      overflow-y: auto;
+      flex: 1;
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .coderun-img {
+      width: 100%;
+      border-radius: calc(var(--radius));
+      border: 1px solid var(--border-light);
+      display: block;
+    }
+    .coderun-caption {
+      font-size: 0.78rem;
+      color: var(--fg-muted);
+      text-align: center;
+      line-height: 1.6;
+      max-width: 560px;
+    }
+
+    /* ── Role section ───────────────────────────────────────── */
+    .role-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+      margin: 1.6rem 0;
+    }
+    .role-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.2rem;
+      transition: border-color var(--t-fast), transform var(--t-med) var(--ease);
+    }
+    .role-card:hover { border-color: var(--border); transform: translateY(-2px); }
+    .role-card-icon {
+      font-size: 1.25rem;
+      margin-bottom: 0.65rem;
+      display: block;
+    }
+    .role-card h4 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--fg);
+      margin-bottom: 0.35rem;
+    }
+    .role-card p {
+      font-size: 0.8rem !important;
+      color: var(--fg-muted) !important;
+      line-height: 1.6 !important;
+      margin: 0 !important;
+    }
+    .collab-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 1rem 0;
+    }
+    .collab-pill {
+      font-size: 0.75rem;
+      padding: 0.28rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-light);
+      color: var(--fg-muted);
+      background: var(--bg-card);
+    }
+    .collab-pill.highlight {
+      background: var(--fg);
+      color: var(--bg);
+      border-color: var(--fg);
+    }
+
+    /* ── DS mini stats (smaller than hero section) ────────── */
+    .ds-mini-stats {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin: 1.2rem 0 1rem;
+    }
+    .ds-mini-item { }
+    .ds-mini-val {
+      font-family: var(--font-serif);
+      font-size: 1.7rem;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--fg);
+      display: block;
+    }
+    .ds-mini-lbl {
+      font-size: 0.7rem;
+      color: var(--fg-muted);
+      display: block;
+      margin-top: 0.15rem;
+    }
+    .ds-section-intro {
+      font-size: 0.95rem;
+      color: var(--fg-muted);
+      line-height: 1.7;
+      margin: 0 0 0.5rem;
+    }
+    .ds-section-sub {
+      font-size: 0.875rem;
+      color: var(--fg-muted);
+      line-height: 1.75;
+      margin: 0 0 1.2rem;
+    }
+
+    /* ── DS flowchart placeholder ───────────────────────────── */
+    .ds-flowchart-ph {
+      width: 100%;
+      aspect-ratio: 16/5;
+      background: var(--bg-alt);
+      outline: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1.2rem 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .ds-flowchart-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      position: relative;
+    }
+    .ds-ph-icon {
+      font-size: 1.5rem;
+      opacity: 0.3;
+      display: block;
+      text-align: center;
+    }
+    .ds-ph-label {
+      font-size: 0.75rem;
+      color: var(--fg-light);
+      text-align: center;
+      max-width: 320px;
+      line-height: 1.5;
+    }
+    .ds-ph-sub {
+      font-size: 0.65rem;
+      color: var(--border);
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    /* ── Component Library image grid ───────────────────────── */
+    .cl-h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 2rem 0 0.5rem;
+      color: var(--fg);
+    }
+    .cl-img-caption.cl-img-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--fg);
+    }
+    .cl-img-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 3rem 0;
+      align-items: center;
+    }
+    .cl-img-grid.cl-img-grid--tight {
+      margin-top: 1.5rem;
+    }
+    .cl-img-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .cl-ph-tall {
+      aspect-ratio: 4/3 !important;
+      flex-direction: column;
+    }
+    .cl-ph-medium {
+      aspect-ratio: 16/9 !important;
+      flex-direction: column;
+    }
+    .cl-ph-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .cl-img-caption {
+      font-size: 0.72rem;
+      color: var(--fg-light);
+      line-height: 1.5;
+      margin: 0;
+      padding: 0 0rem;
+    }
+
+    @media (max-width: 600px) {
+      .cl-img-grid { grid-template-columns: 1fr; }
+      #component-library .cl-img-grid:nth-of-type(2) .cl-img-block:first-child { order: 2; }
+      #component-library .cl-img-grid:nth-of-type(2) .cl-img-block:last-child { order: 1; padding-left:0px!important; }
+      .ds-mini-stats { gap: 1.2rem; }
+    }
+
+    /* ── DS Hero stats ──────────────────────────────────────── */
+    .ds-hero {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 2rem 2rem 1.6rem;
+      margin: 1.6rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .ds-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 60%;
+      height: 100%;
+      background: radial-gradient(ellipse 80% 80% at 100% 0%, rgba(42,92,255,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .ds-hero-nums {
+      display: flex;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .ds-num-item { }
+    .ds-num-val {
+      font-family: var(--font-serif);
+      font-size: 2.4rem;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--fg);
+      display: block;
+    }
+    .ds-num-lbl {
+      font-size: 0.74rem;
+      color: var(--fg-muted);
+      display: block;
+      margin-top: 0.2rem;
+    }
+    .ds-hero-layers {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .ds-layer-badge {
+      font-size: 0.72rem;
+      padding: 0.22rem 0.65rem;
+      border-radius: 6px;
+      color: var(--fg-muted);
+      border: 1px solid var(--border-light);
+      background: var(--bg-alt);
+    }
+    .ds-layer-badge.foundation { border-color: #c0ccf0; background: #f0f4ff; color: #3355aa; }
+    .ds-layer-badge.primitives { border-color: #b0e0c0; background: #f0fff4; color: #2a7a4a; }
+    .ds-layer-badge.compositions { border-color: #e8d0b0; background: #fff8f0; color: #8a5520; }
+    .ds-layer-badge.patterns { border-color: #d0b8e0; background: #faf0ff; color: #6a3a8a; }
+    .ds-layer-badge.templates { border-color: #b8d8e0; background: #f0f8ff; color: #2a5a7a; }
+
+    /* ── Component showcase ─────────────────────────────────── */
+    .comp-showcase {
+      margin: 3.5rem 0;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .comp-showcase-header {
+      background: var(--bg-alt);
+      padding: 0.55rem 1rem;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.67rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--fg-light);
+    }
+    .comp-showcase-header .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+    .comp-showcase-body {
+      background: var(--bg-card);
+      padding: 0;
+    }
+    .comp-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 1.1rem;
+      padding-bottom: 1.1rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .comp-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .comp-row-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--fg-light);
+      width: 80px;
+      flex-shrink: 0;
+    }
+    /* Fake component atoms */
+    .fc-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.3rem 0.85rem; border-radius: 8px;
+      font-size: 0.74rem; font-weight: 500; cursor: default;
+      transition: opacity 0.15s;
+    }
+    .fc-btn.primary   { background: #0f0f0f; color: #f5f4f0; }
+    .fc-btn.secondary { background: transparent; border: 1px solid #d8d5ce; color: #6b6b6b; }
+    .fc-btn.ghost     { background: transparent; color: #6b6b6b; }
+    .fc-btn.danger    { background: #dc2626; color: #fff; }
+    .fc-btn.disabled  { opacity: 0.38; cursor: not-allowed; }
+    .fc-btn.sm        { padding: 0.18rem 0.6rem; font-size: 0.68rem; border-radius: 6px; }
+    .fc-btn.lg        { padding: 0.45rem 1.1rem; font-size: 0.82rem; border-radius: 10px; }
+    .fc-input {
+      display: inline-flex; align-items: center;
+      height: 32px; padding: 0 0.7rem;
+      border: 1px solid #e8e5de; border-radius: 8px;
+      background: #fff; font-size: 0.74rem; color: #999;
+      min-width: 140px;
+    }
+    .fc-input.error { border-color: #dc2626; }
+    .fc-input.focus { border-color: #0f0f0f; box-shadow: 0 0 0 3px rgba(15,15,15,0.08); }
+    .fc-badge {
+      display: inline-block; padding: 0.12rem 0.5rem;
+      border-radius: 999px; font-size: 0.68rem; font-weight: 500;
+    }
+    .fc-badge.success { background: #dcfce7; color: #166534; }
+    .fc-badge.warn    { background: #fef9c3; color: #854d0e; }
+    .fc-badge.error   { background: #fee2e2; color: #991b1b; }
+    .fc-badge.neutral { background: var(--bg-alt); color: var(--fg-muted); border: 1px solid var(--border-light); }
+    .fc-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 0.68rem; font-weight: 600; flex-shrink: 0;
+    }
+    .fc-avatar.a { background: #e0e7ff; color: #3730a3; }
+    .fc-avatar.b { background: #d1fae5; color: #065f46; }
+    .fc-avatar.c { background: #fce7f3; color: #9d174d; }
+    .fc-toggle {
+      width: 36px; height: 20px; border-radius: 999px; position: relative;
+      cursor: default; flex-shrink: 0;
+    }
+    .fc-toggle::after {
+      content: ''; position: absolute;
+      width: 14px; height: 14px; border-radius: 50%; background: #fff;
+      top: 3px; transition: left 0.2s;
+    }
+    .fc-toggle.off { background: #d8d5ce; }
+    .fc-toggle.off::after { left: 3px; }
+    .fc-toggle.on  { background: #0f0f0f; }
+    .fc-toggle.on::after  { left: 19px; }
+
+    /* ── Figma library mockup ───────────────────────────────── */
+    .figma-ph {
+      width: 100%;
+      aspect-ratio: 16/9;
+      outline:1px solid var(--border-light);
+      background: #1e1e1e;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1.4rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .figma-ph-label {
+      font-size: 0.7rem;
+      color: #666;
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+    }
+    .figma-sidebar {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 200px;
+      background: #2c2c2c;
+      border-right: 1px solid #3a3a3a;
+      padding: 0.75rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .figma-sidebar-item {
+      padding: 0.28rem 0.75rem;
+      font-size: 0.68rem;
+      color: #888;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: default;
+    }
+    .figma-sidebar-item.active { background: rgba(255,255,255,0.07); color: #eee; }
+    .figma-sidebar-group {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #555;
+      padding: 0.7rem 0.75rem 0.2rem;
+    }
+    .figma-canvas {
+      position: absolute;
+      left: 200px; top: 0; right: 160px; bottom: 0;
+      padding: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-content: flex-start;
+    }
+    .figma-comp-chip {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px;
+      padding: 0.5rem 0.65rem;
+      font-size: 0.62rem;
+      color: #aaa;
+      min-width: 55px;
+      text-align: center;
+    }
+    .figma-right {
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 160px;
+      background: #2c2c2c;
+      border-left: 1px solid #3a3a3a;
+      padding: 0.75rem 0.7rem;
+    }
+    .figma-prop-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+    .figma-prop-key { font-size: 0.6rem; color: #666; }
+    .figma-prop-val { font-size: 0.6rem; color: #9cdcfe; font-family: monospace; }
+
+    /* ── Token architecture ─────────────────────────────────── */
+    .token-diagram {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin: 1.2rem 0;
+    }
+    .token-tier {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .token-tier-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--fg-light);
+      width: 90px;
+      flex-shrink: 0;
+    }
+    .token-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .token-chip {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      padding: 0.18rem 0.55rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-light);
+      background: var(--bg-card);
+      color: var(--fg-muted);
+    }
+    .token-chip.global    { background: #f0f4ff; border-color: #c0ccf0; color: #3355aa; }
+    .token-chip.semantic  { background: #f0fff4; border-color: #b0e0c0; color: #2a7a4a; }
+    .token-chip.component { background: #fff8f0; border-color: #e8d0b0; color: #8a5520; }
+    .token-arrow { font-size: 0.7rem; color: var(--fg-light); padding: 0 0.4rem; }
+
+    /* ── Token theme switcher ───────────────────────────────── */
+    .theme-switcher {
+      margin: 1.5rem 0;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .theme-tabs {
+      display: flex;
+      background: var(--bg-alt);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .theme-tab {
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      color: var(--fg-light);
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s;
+      border-right: 1px solid var(--border-light);
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .theme-tab:last-child { border-right: none; }
+    .theme-tab.active { color: var(--fg); background: var(--bg-card); }
+    .theme-tab .theme-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.12);
+    }
+    .theme-panel { display: none; }
+    .theme-panel.active { display: block; }
+    .theme-img-ph {
+      width: 100%;
+      aspect-ratio: 16/7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: var(--fg-light);
+      font-family: 'DM Mono', monospace;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Light theme preview */
+    .theme-panel[data-theme="light"] .theme-img-ph {
+      background: #f5f4f0;
+    }
+    /* Dark theme preview */
+    .theme-panel[data-theme="dark"] .theme-img-ph {
+      background: #141414;
+      color: #555;
+    }
+    /* Brand A */
+    .theme-panel[data-theme="brand-a"] .theme-img-ph {
+      background: #0a1628;
+      color: #334;
+    }
+    /* Brand B */
+    .theme-panel[data-theme="brand-b"] .theme-img-ph {
+      background: #fdf6ef;
+      color: #c8b89a;
+    }
+    /* Accessibility */
+    .theme-panel[data-theme="a11y"] .theme-img-ph {
+      background: #fff;
+      color: #aaa;
+    }
+
+    /* Fake UI inside theme previews */
+    .theme-ui { padding: 1.5rem 2rem; width: 100%; height: 100%; display: flex; flex-direction: column; gap: 0.7rem; }
+    .theme-ui-nav {
+      display: flex; gap: 1rem; align-items: center;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid;
+    }
+    .theme-ui-navitem { font-size: 0.72rem; font-weight: 500; }
+    .theme-ui-row { display: flex; gap: 0.6rem; align-items: center; }
+    .theme-ui-card { border-radius: 8px; padding: 0.65rem 0.85rem; flex: 1; border: 1px solid; }
+    .theme-ui-card-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.25rem; }
+    .theme-ui-card-val { font-size: 1.1rem; font-family: var(--font-serif); }
+    .theme-ui-btn { border-radius: 7px; padding: 0.3rem 0.8rem; font-size: 0.72rem; font-weight: 600; border: none; cursor: default; }
+
+    /* Per-theme colour values */
+    .theme-panel[data-theme="light"] .theme-ui-nav { border-color: #e0ddd6; }
+    .theme-panel[data-theme="light"] .theme-ui-navitem { color: #0f0f0f; }
+    .theme-panel[data-theme="light"] .theme-ui-navitem:first-child { border-bottom: 2px solid #0f0f0f; padding-bottom: 2px; }
+    .theme-panel[data-theme="light"] .theme-ui-card { background: #fff; border-color: #e8e5de; }
+    .theme-panel[data-theme="light"] .theme-ui-card-label { color: #a0a0a0; }
+    .theme-panel[data-theme="light"] .theme-ui-card-val { color: #0f0f0f; }
+    .theme-panel[data-theme="light"] .theme-ui-btn { background: #0f0f0f; color: #f5f4f0; }
+
+    .theme-panel[data-theme="dark"] .theme-ui-nav { border-color: #2a2a2e; }
+    .theme-panel[data-theme="dark"] .theme-ui-navitem { color: #e0e0e0; }
+    .theme-panel[data-theme="dark"] .theme-ui-navitem:first-child { border-bottom: 2px solid #e0e0e0; padding-bottom: 2px; }
+    .theme-panel[data-theme="dark"] .theme-ui-card { background: #1e1e22; border-color: #2e2e34; }
+    .theme-panel[data-theme="dark"] .theme-ui-card-label { color: #666; }
+    .theme-panel[data-theme="dark"] .theme-ui-card-val { color: #f0f0f0; }
+    .theme-panel[data-theme="dark"] .theme-ui-btn { background: #fff; color: #0f0f0f; }
+
+    .theme-panel[data-theme="brand-a"] .theme-ui-nav { border-color: #1a2a40; }
+    .theme-panel[data-theme="brand-a"] .theme-ui-navitem { color: #8ba4cc; }
+    .theme-panel[data-theme="brand-a"] .theme-ui-navitem:first-child { color: #5b9bd5; border-bottom: 2px solid #5b9bd5; padding-bottom: 2px; }
+    .theme-panel[data-theme="brand-a"] .theme-ui-card { background: #0d1f35; border-color: #1a2f4a; }
+    .theme-panel[data-theme="brand-a"] .theme-ui-card-label { color: #4a6a8a; }
+    .theme-panel[data-theme="brand-a"] .theme-ui-card-val { color: #a8ccf0; }
+    .theme-panel[data-theme="brand-a"] .theme-ui-btn { background: #5b9bd5; color: #fff; }
+
+    .theme-panel[data-theme="brand-b"] .theme-ui-nav { border-color: #e8d5be; }
+    .theme-panel[data-theme="brand-b"] .theme-ui-navitem { color: #5a3e28; }
+    .theme-panel[data-theme="brand-b"] .theme-ui-navitem:first-child { color: #a0642a; border-bottom: 2px solid #a0642a; padding-bottom: 2px; }
+    .theme-panel[data-theme="brand-b"] .theme-ui-card { background: #fff; border-color: #e8d5be; }
+    .theme-panel[data-theme="brand-b"] .theme-ui-card-label { color: #b8a090; }
+    .theme-panel[data-theme="brand-b"] .theme-ui-card-val { color: #3a2418; }
+    .theme-panel[data-theme="brand-b"] .theme-ui-btn { background: #a0642a; color: #fff; }
+
+    .theme-panel[data-theme="a11y"] .theme-ui-nav { border-color: #000; }
+    .theme-panel[data-theme="a11y"] .theme-ui-navitem { color: #000; font-weight: 600; }
+    .theme-panel[data-theme="a11y"] .theme-ui-navitem:first-child { border-bottom: 3px solid #000; padding-bottom: 2px; }
+    .theme-panel[data-theme="a11y"] .theme-ui-card { background: #fff; border-color: #000; border-width: 2px; }
+    .theme-panel[data-theme="a11y"] .theme-ui-card-label { color: #333; font-weight: 600; }
+    .theme-panel[data-theme="a11y"] .theme-ui-card-val { color: #000; }
+    .theme-panel[data-theme="a11y"] .theme-ui-btn { background: #000; color: #fff; font-size: 0.8rem; }
+
+    /* ── Documentation section ──────────────────────────────── */
+    .doc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+    .doc-card {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color var(--t-fast), transform var(--t-med) var(--ease);
+    }
+    .doc-card:hover { border-color: var(--border); transform: translateY(-2px); }
+    .doc-card-header {
+      background: var(--bg-alt);
+      padding: 0.55rem 0.85rem;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .doc-card-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--fg);
+    }
+    .doc-card-badge {
+      font-size: 0.62rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      color: var(--fg-light);
+      margin-left: auto;
+    }
+    .doc-card-body {
+      background: var(--bg-card);
+      padding: 1rem 0.85rem;
+    }
+    .doc-item-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 0.77rem;
+      color: var(--fg-muted);
+    }
+    .doc-item-row:last-child { border-bottom: none; }
+    .doc-item-icon { font-size: 0.85rem; width: 18px; text-align: center; flex-shrink: 0; }
+    .doc-item-status {
+      margin-left: auto;
+      font-size: 0.64rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+    }
+    .doc-item-status.done { background: #dcfce7; color: #166534; }
+    .doc-item-status.review { background: #fef9c3; color: #854d0e; }
+    .doc-item-status.draft { background: var(--bg-alt); color: var(--fg-light); }
+
+    /* ── UX new apps section ────────────────────────────────── */
+    .ux-modules-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin: 1.4rem 0 0;
+    }
+    .ux-module-card {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 0.9rem;
+      background: var(--bg-card);
+      transition: border-color var(--t-fast), transform var(--t-med) var(--ease);
+      cursor: pointer;
+    }
+    .ux-module-card:hover,
+    .ux-module-card.active { border-color: var(--fg); transform: translateY(-1px); }
+    .ux-module-card.active { background: var(--fg); }
+    .ux-module-card.active .ux-module-name { color: var(--bg); }
+    .ux-module-card.active .ux-module-desc { color: rgba(245,244,240,0.65); }
+    .ux-module-icon { font-size: 1.1rem; margin-bottom: 0.45rem; display: block; }
+    .ux-module-name { font-size: 0.8rem; font-weight: 600; color: var(--fg); display: block; margin-bottom: 0.2rem; }
+    .ux-module-desc { font-size: 0.74rem; color: var(--fg-muted); line-height: 1.5; }
+
+    .ux-screen-wrapper {
+      margin-top: 1.2rem;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .ux-screen-nav {
+      background: var(--bg-alt);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .ux-screen-nav::-webkit-scrollbar { display: none; }
+    .ux-screen-tab {
+      padding: 0.5rem 1rem;
+      font-size: 0.74rem;
+      color: var(--fg-light);
+      cursor: pointer;
+      border-right: 1px solid var(--border-light);
+      white-space: nowrap;
+      transition: color 0.15s, background 0.15s;
+      user-select: none;
+    }
+    .ux-screen-tab.active { color: var(--fg); background: var(--bg-card); font-weight: 500; }
+    .ux-screen-tab:hover:not(.active) { color: var(--fg-muted); }
+
+    .ux-screen-canvas {
+      background: var(--bg-card);
+      aspect-ratio: 16/8;
+      display: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .ux-screen-canvas.active { display: flex; align-items: center; justify-content: center; }
+    .ux-screen-caption {
+      background: var(--bg-alt);
+      border-top: 1px solid var(--border-light);
+      padding: 0.55rem 1rem;
+      font-size: 0.75rem;
+      color: var(--fg-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .ux-screen-caption strong { color: var(--fg); }
+
+    /* Fake screen content inside ux-screen-canvas */
+    .fake-app {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .fake-app-topbar {
+      padding: 0.5rem 1.2rem;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-shrink: 0;
+    }
+    .fake-app-title { font-weight: 600; font-size: 0.82rem; color: var(--fg); }
+    .fake-app-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+    .fake-app-sidebar {
+      width: 160px;
+      border-right: 1px solid var(--border-light);
+      padding: 0.6rem 0;
+      flex-shrink: 0;
+      background: var(--bg-alt);
+    }
+    .fake-app-sidebar-item {
+      padding: 0.3rem 0.75rem;
+      font-size: 0.68rem;
+      color: var(--fg-muted);
+    }
+    .fake-app-sidebar-item.active {
+      background: var(--bg-card);
+      color: var(--fg);
+      font-weight: 500;
+      border-left: 2px solid var(--fg);
+    }
+    .fake-app-main {
+      flex: 1;
+      padding: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      overflow: hidden;
+    }
+    .fake-row { display: flex; gap: 0.5rem; }
+    .fake-card-sm {
+      flex: 1;
+      background: var(--bg-alt);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 0.55rem 0.65rem;
+    }
+    .fake-card-sm .fk-label { font-size: 0.6rem; color: var(--fg-light); text-transform: uppercase; letter-spacing: 0.07em; }
+    .fake-card-sm .fk-val { font-size: 1rem; font-family: var(--font-serif); color: var(--fg); margin-top: 0.1rem; }
+    .fake-table {
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      overflow: hidden;
+      flex: 1;
+      font-size: 0.65rem;
+    }
+    .fake-table-head {
+      display: flex;
+      background: var(--bg-alt);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .fake-table-row { display: flex; border-bottom: 1px solid var(--border-light); }
+    .fake-table-row:last-child { border-bottom: none; }
+    .fake-cell {
+      flex: 1;
+      padding: 0.3rem 0.5rem;
+      color: var(--fg-muted);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .fake-cell.head { color: var(--fg-light); font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; font-size: 0.58rem; }
+
+    /* Image grid */
+    .seyfor-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin: 1.4rem 0;
+    }
+    .seyfor-ph {
+      aspect-ratio: 6/4!important;
+      background: var(--bg-alt);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: var(--fg-light);
+      text-align: center;
+      padding: 0.75rem;
+      line-height: 1.5;
+    }
+    .seyfor-wide-ph {
+      width: 100%;
+      aspect-ratio: 16/5;
+      background: var(--bg-alt);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: var(--fg-light);
+      text-align: center;
+      margin: 1.4rem 0;
+    }
+
+    /* Before / After slider inner content fix */
+    .comparison-slider .cs-after > div {
+      width: 200%;
+    }
+
+    /* ── Documentation — improved layout ───────────────────── */
+    .doc-preview-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0 1.6rem;
+    }
+    .doc-preview-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .doc-preview-img {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+      flex: 1;
+    }
+    .doc-preview-inner {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 220px;
+    }
+    .doc-preview-bar {
+      background: #f5f4f0;
+      border-bottom: 1px solid var(--border-light);
+      padding: 0.45rem 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .doc-preview-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      display: inline-block; flex-shrink: 0;
+    }
+    .doc-preview-filename {
+      font-size: 0.68rem;
+      color: var(--fg-light);
+      margin-left: 0.35rem;
+      font-family: 'DM Mono', monospace;
+    }
+    .doc-preview-content {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    .doc-preview-sidebar {
+      width: 110px;
+      background: var(--bg-alt);
+      border-right: 1px solid var(--border-light);
+      padding: 0.5rem 0;
+      flex-shrink: 0;
+    }
+    .doc-sidebar-item {
+      padding: 0.28rem 0.75rem;
+      font-size: 0.68rem;
+      color: var(--fg-muted);
+    }
+    .doc-sidebar-item.active {
+      background: var(--bg-card);
+      color: var(--fg);
+      font-weight: 500;
+      border-left: 2px solid var(--fg);
+    }
+    .doc-preview-body {
+      flex: 1;
+      background: var(--bg-card);
+      padding: 0.75rem 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .doc-body-title { font-size: 0.8rem; font-weight: 600; color: var(--fg); }
+    .doc-body-sub   { font-size: 0.68rem; color: var(--fg-light); }
+    .doc-body-chips { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+    .doc-body-chip  {
+      font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 999px;
+      border: 1px solid var(--border-light);
+    }
+    .doc-body-chip.primary-chip   { background: #0f0f0f; color: #f5f4f0; border-color: #0f0f0f; }
+    .doc-body-chip.secondary-chip { background: transparent; color: var(--fg-muted); }
+    .doc-body-chip.ghost-chip     { background: transparent; color: var(--fg-light); }
+    .doc-body-rule { height: 1px; background: var(--border-light); margin: 0.2rem 0; }
+    .doc-do-dont { display: flex; flex-direction: column; gap: 0.3rem; }
+    .doc-do, .doc-dont { display: flex; align-items: flex-start; gap: 0.4rem; }
+    .doc-do-label  { font-size: 0.62rem; font-weight: 600; color: #166534; white-space: nowrap; }
+    .doc-dont-label{ font-size: 0.62rem; font-weight: 600; color: #991b1b; white-space: nowrap; }
+    .doc-do-text, .doc-dont-text { font-size: 0.68rem; color: var(--fg-muted); line-height: 1.45; }
+    .doc-a11y-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.2rem 0; }
+    .doc-a11y-badge {
+      font-size: 0.6rem; font-weight: 700; padding: 0.12rem 0.4rem;
+      border-radius: 3px; flex-shrink: 0;
+    }
+    .doc-a11y-badge.pass   { background: #dcfce7; color: #166534; }
+    .doc-a11y-badge.review { background: #fef9c3; color: #854d0e; }
+    .doc-a11y-text { font-size: 0.68rem; color: var(--fg-muted); }
+    .doc-preview-caption {
+      font-size: 0.72rem;
+      color: var(--fg-light);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Principles grid */
+    .doc-principles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1rem 0 0;
+    }
+    .doc-principle-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 0.9rem 1rem;
+      transition: border-color var(--t-fast), transform var(--t-med) var(--ease);
+    }
+    .doc-principle-card:hover { border-color: var(--border); transform: translateY(-1px); }
+    .doc-principle-icon { font-size: 1.15rem; flex-shrink: 0; margin-top: 0.05rem; }
+    .doc-principle-title {
+      font-size: 0.8rem; font-weight: 600; color: var(--fg); margin-bottom: 0.2rem;
+    }
+    .doc-principle-text { font-size: 0.77rem; color: var(--fg-muted); line-height: 1.6; }
+
+    /* ── UX module pill switcher ──────────────────────────────── */
+    .uxm-switcher {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 1.4rem 0 0;
+    }
+    .uxm-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.38rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-light);
+      background: var(--bg-card);
+      font-size: 0.78rem;
+      color: var(--fg-muted);
+      cursor: pointer;
+      transition: border-color var(--t-fast), color var(--t-fast), background var(--t-fast), transform var(--t-med) var(--ease);
+      white-space: nowrap;
+      font-weight: 500;
+    }
+    .uxm-pill:hover { border-color: var(--border); color: var(--fg); transform: translateY(-1px); }
+    .uxm-pill.active {
+      background: var(--fg);
+      color: var(--bg);
+      border-color: var(--fg);
+      font-weight: 500;
+    }
+
+    /* ── UX module info card ─────────────────────────────────── */
+    .uxm-info-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 1rem 1.2rem;
+      margin: 0.75rem 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .uxm-info-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .uxm-info-icon { font-size: 1.1rem; }
+    .uxm-info-name { font-size: 0.88rem; font-weight: 600; color: var(--fg); }
+    .uxm-info-badge {
+      margin-left: auto;
+      font-size: 0.65rem;
+      padding: 0.12rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-light);
+      color: var(--fg-light);
+      background: var(--bg-alt);
+    }
+    .uxm-info-desc {
+      font-size: 0.83rem;
+      color: var(--fg-muted);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* ── UX carousel ─────────────────────────────────────────── */
+    .uxm-carousel {
+      margin-top: 1.20rem;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      overflow: visible;
+      position: relative;
+    }
+    .uxm-carousel-viewport {
+      overflow: hidden;
+      position: relative;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .uxm-carousel-track {
+      display: flex;
+      transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+    .uxm-slide {
+      width: 100%;
+      flex-shrink: 0;
+      height: 449px;
+      background: var(--bg-card);
+      position: relative;
+      overflow: hidden;
+    }
+    .uxm-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .uxm-ph-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      gap: 0.6rem;
+      background: var(--bg-alt);
+    }
+    .uxm-ph-icon { font-size: 1.6rem; opacity: 0.4; }
+    .uxm-ph-label { font-size: 0.75rem; color: var(--fg-light); text-align: center; padding: 0 2rem; font-family: 'DM Mono', monospace; }
+
+    /* Carousel footer: dots only (centered) */
+    .uxm-carousel-footer {
+      background: var(--bg-alt);
+      border-top: 1px solid var(--border-light);
+      border-bottom-left-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .uxm-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1px solid var(--border-light);
+      background: var(--bg-card);
+      color: var(--fg-muted);
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color var(--t-fast), color var(--t-fast), background var(--t-fast), box-shadow var(--t-fast);
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    }
+    .uxm-arrow#uxmPrev { left: -16px; }
+    .uxm-arrow#uxmNext { right: -16px; }
+    .uxm-arrow:hover { border-color: var(--border); color: var(--fg); background: var(--bg-card); box-shadow: 0 3px 12px rgba(0,0,0,0.16); }
+    .uxm-dots { display: flex; gap: 0.35rem; align-items: center; }
+    .uxm-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: background var(--t-fast), transform var(--t-fast);
+    }
+    .uxm-dot.active { background: var(--fg); transform: scale(1.35); }
+
+    /* Caption bar */
+    .uxm-caption-bar {
+      background: var(--bg-alt);
+      border-top: 1px solid var(--border-light);
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      color: var(--fg-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+    .uxm-caption-module { font-weight: 600; color: var(--fg); }
+    .uxm-caption-sep    { color: var(--border); }
+    .uxm-slide-counter  {
+      margin-left: auto;
+      font-size: 0.65rem;
+      color: var(--fg-light);
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* Slide click-to-expand hint */
+    .uxm-slide {
+      cursor: zoom-in;
+    }
+    .uxm-slide:hover::after {
+      content: '⤢';
+      position: absolute;
+      bottom: 0.55rem;
+      right: 0.65rem;
+      font-size: 1rem;
+      color: var(--fg-muted);
+      opacity: 0.6;
+      pointer-events: none;
+      transition: opacity var(--t-fast);
+    }
+
+    /* Image lightbox modal */
+    .uxm-lightbox-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 10, 10, 0.82);
+      z-index: 600;
+      padding: 1.5rem;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .uxm-lightbox-backdrop.open { display: flex; }
+    .uxm-lightbox-card {
+      position: relative;
+      width: auto;
+      max-height: 90vh;
+      background: var(--bg-card);
+      border-radius: calc(var(--radius) * 1.5);
+      border: 1px solid var(--border-light);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .uxm-lightbox-backdrop.open .uxm-lightbox-card {
+      animation: fadeInUp 0.22s ease;
+    }
+    .uxm-lightbox-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.1rem;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--bg-card);
+      flex-shrink: 0;
+    }
+    .uxm-lightbox-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--fg);
+    }
+    .uxm-lightbox-badge {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--fg-muted);
+    }
+    .uxm-lightbox-close {
+      width: 2.2rem;
+      height: 2.2rem;
+      border: 1px solid var(--border-light);
+      border-radius: 999px;
+      background: var(--bg-card);
+      color: var(--fg);
+      font-size: 1.05rem;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform var(--t-fast), background var(--t-fast), border-color var(--t-fast);
+    }
+    .uxm-lightbox-close:hover { transform: scale(1.06); border-color: var(--border); background: var(--bg-alt); }
+    .uxm-lightbox-content {
+      overflow: auto;
+      flex: 1;
+      padding: 0;
+      display: flex;
+      align-items: stretch;
+    }
+    .uxm-lightbox-content .uxm-lightbox-inner {
+      width: auto;
+      min-height: auto;
+      overflow: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+    .uxm-lightbox-inner .uxm-lightbox-slide {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+    .uxm-lightbox-inner img {
+      max-width: 100%;
+      max-height: calc(90vh - 190px);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+    .uxm-lightbox-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 1.1rem;
+      border-top: 1px solid var(--border-light);
+      background: var(--bg-alt);
+      flex-shrink: 0;
+      font-size: 0.73rem;
+      color: var(--fg-muted);
+    }
+    .uxm-lightbox-nav {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .uxm-lightbox-nav-btn {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1px solid var(--border-light);
+      background: var(--bg-card);
+      color: var(--fg-muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color var(--t-fast), color var(--t-fast), background var(--t-fast);
+    }
+    .uxm-lightbox-nav-btn:hover { border-color: var(--border); color: var(--fg); }
+
+    @media (max-width: 700px) {
+      .doc-preview-row, .doc-principles-grid { grid-template-columns: 1fr; }
+      .uxm-switcher { gap: 0.3rem; }
+      .uxm-pill { font-size: 0.72rem; padding: 0.3rem 0.65rem; }
+    }
+
+    @media (max-width: 700px) {
+      .role-grid, .ux-modules-grid { grid-template-columns: 1fr 1fr; }
+      .seyfor-3col, .doc-grid { grid-template-columns: 1fr; }
+      .ds-hero-nums { gap: 1.5rem; }
+      .figma-sidebar, .figma-right { display: none; }
+      .figma-canvas { left: 0; right: 0; }
+      .uxm-slide { height: auto; aspect-ratio: 16 / 9; }
+      .uxm-slide img { height: auto; object-fit: contain; }
+    }
+    @media (max-width: 480px) {
+      .role-grid, .ux-modules-grid { grid-template-columns: 1fr; }
+    }
+    /* Page-scoped fixes: make the span-based chevron symmetrical, slightly smaller and nudged up;
+       also ensure this page's footer dropdown appears above other content. */
+    .site-footer .lang-dropdown .lang-chevron,
+    .footer-inner .lang-dropdown .lang-chevron {
+      width: 0.56rem;
+      height: 0.56rem;
+      opacity: 0.9;
+      margin-left: 0.1rem;
+      display: inline-block;
+      position: relative;
+      top: -2px; /* nudge arrow up for better visual centering */
+    }
+    .site-footer .lang-dropdown .lang-chevron::after,
+    .footer-inner .lang-dropdown .lang-chevron::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 8px; /* smaller, symmetric arrow */
+      height: 8px;
+      transform: translate(-50%, -55%) rotate(45deg);
+      border-bottom: 1.25px solid currentColor;
+      border-right: 1.25px solid currentColor;
+      box-sizing: border-box;
+    }
+    .site-footer .lang-dropdown.open .lang-chevron,
+    .footer-inner .lang-dropdown.open .lang-chevron {
+      transform: translateY(2px) rotate(180deg); /* keep open rotation but preserve vertical nudge */
+    }
+    .site-footer .lang-dropdown .lang-dropdown-menu,
+    .footer-inner .lang-dropdown .lang-dropdown-menu {
+      z-index: 9999; /* bring above page content */
+      min-width: 130px; /* avoid truncated labels */
+      left: auto;
+      right: 0;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body class="case-body-page">
+
+<nav class="case-nav">
+  <div class="case-nav-inner">
+    <a href="/index.html" class="back-link">Back</a>
+    <ul class="case-toc">
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#role">Role</a></li>
+      <li><a href="#design-system">Design System</a></li>
+      <li><a href="#component-library">Components</a></li>
+      <li><a href="#tokens">Tokens</a></li>
+      <li><a href="#code">Code & Handoff</a></li>
+      <li><a href="#documentation">Docs</a></li>
+      <li><a href="#ux-apps">UX Apps</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="case-page">
+
+  <!-- ①  HERO ────────────────────────────────────────────────── -->
+  <div class="case-hero" id="overview">
+    <div class="case-tags">
+      <span class="case-tag">Design System</span>
+      <span class="case-tag">Components</span>
+      <span class="case-tag">Design Tokens</span>
+      <span class="case-tag">Documentation</span>
+      <span class="case-tag">Dev Collaboration</span>
+      <span class="case-tag">UX Design</span>
+    </div>
+    <h1>Seyfor <span style="font-style:italic;color:var(--fg-muted);">2022 — Present</span></h1>
+    <p class="case-hero-sub">Seyfor je jednou z největších českých softwarových společností zaměřených na ERP, CRM, HR systémy a cloudová řešení. Do firmy jsem nastoupil jako UX/UI designér a pracoval především na produktu Vema – HR platformě, kterou firmy využívají pro správu zaměstnanců, mezd a interních procesů.</p>
+
+    <div class="case-stats">
+      <div class="stat"><div class="stat-num">10+</div><div class="stat-label">produktových týmů</div></div>
+      <div class="stat"><div class="stat-num">120+</div><div class="stat-label">komponent v knihovně</div></div>
+      <div class="stat"><div class="stat-num">2+</div><div class="stat-label">rychlejší onboarding</div></div>
+    </div>
+
+    <div class="seyfor-wide-ph" style="aspect-ratio:16/6;margin-top:2rem;">
+      <img src="../img/seyfor-thumbnail-extended.png" alt="Seyfor — design system overview" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius);display:block;" />
+    </div>
+  </div>
+
+  <!-- ②  ROLE ────────────────────────────────────────────────── -->
+  <div class="case-section" id="role">
+    <h2>Moje role</h2>
+    <p>Připojil jsem se ke čtyřčlennému týmu designérů, který rozvíjel design systém vytvořený teprve několik let před mým nástupem. Mým prvním úkolem bylo rychle porozumět rozsáhlému a komplexnímu produktovému ekosystému. Následně jsem se podílel na rozvoji design systému, zlepšování architektury komponent a na jeho konzistentním využívání napříč novými aplikacemi.</p>
+
+    <div class="role-grid">
+      <div class="role-card">
+        <span class="role-card-icon">👨🏻‍💻</span>
+        <h4>Náplň práce</h4>
+        <p>Design systém, knihovna komponent, design tokeny, dokumentace, návrh produktů a UX handoff.</p>
+      </div>
+      <div class="role-card">
+        <span class="role-card-icon">🎯</span>
+        <h4>Zodpovědnosti</h4>
+        <p>Správa UI komponent, design tokenů a dohled nad kvalitou výstupů, za naše oddělení, před jejich předáním vývojářům.</p>
+      </div>
+      <div class="role-card">
+        <span class="role-card-icon">👨‍👨‍👦‍👦</span>
+        <h4>Spolupráce</h4>
+        <p>Úzká spolupráce s webovými, aplikačními i systémovými vývojáři, business analytiky a dalšími designéry napříč celou společností.</p>
+      </div>
+    </div>
+
+    <h3>Kontext a výzva</h3>
+    <p>Když jsem do týmu nastoupil, design systém byl stále v rané fázi vývoje. Design tokeny ještě nebyly zavedené, knihovny byly roztříštěné a dokumentace postrádala jasnou strukturu. Postupně jsem pomáhal budovat sdílenou knihovnu komponent, zavádět architekturu založenou na tokenech, zlepšovat dokumentaci a nastavovat efektivnější procesy spolupráce mezi designem a vývojem. </p>
+
+    <div class="cs-grid" style="margin-top:1.5rem;">
+      <div class="cs-block">
+        <h4>Předtím</h4>
+        <p style="font-size:0.85rem;color:var(--fg-muted);line-height:1.7;">Samostatné Figma knihoveny. Každý tým si definoval barvy, mezery a typografii po svém, což vedlo k nekonzistenci a chybám při implementaci.</p>
+      </div>
+      <div class="cs-block">
+        <h4>Poté</h4>
+        <p style="font-size:0.85rem;color:var(--fg-muted);line-height:1.7;">Jedna sdílená Figma knihovna, architektura založená na design tokenech a jasně definované procesy pro tvorbu, revizi a dokumentaci komponent.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③  DESIGN SYSTEM ────────────────────────────────────────── -->
+  <div class="case-section" id="design-system">
+    <h2>Design Systém</h2>
+    <p class="ds-section-intro">Cílem bylo vytvořit jednotný design systém pro rostoucí ekosystém produktu Vema. S rozšiřováním platformy bylo stále náročnější udržovat konzistenci. Design systém přinesl sdílené standardy, které snížily chybovost a zlepšily použitelnost produktu.</p>
+
+    <!-- DS mini stats -->
+    <div class="ds-mini-stats">
+      <div class="ds-mini-item">
+        <span class="ds-mini-val">120+</span>
+        <span class="ds-mini-lbl">komponent</span>
+      </div>
+      <div class="ds-mini-item">
+        <span class="ds-mini-val">20+</span>
+        <span class="ds-mini-lbl">paternů</span>
+      </div>
+      <div class="ds-mini-item">
+        <span class="ds-mini-val">10+</span>
+        <span class="ds-mini-lbl">templates</span>
+      </div>
+      <div class="ds-mini-item">
+        <span class="ds-mini-val">1000+</span>
+        <span class="ds-mini-lbl">tokens</span>
+      </div>
+    </div>
+
+    <p class="ds-section-sub">Design systém propojuje design tokeny, komponenty, patterny, šablony a návrhy aplikací do jednoho konzistentního a škálovatelného řešení.</p>
+
+    <!-- Flowchart image -->
+    <div class="ds-flowchart-ph">
+      <img src="../img/seyfor-chart.png" alt="Seyfor flowchart — architektura systému a token pipeline" style="width:100%;height:100%;object-fit:cover;display:block;" />
+    </div>
+  </div>
+
+  <!-- ③b COMPONENT LIBRARY ──────────────────────────────────────── -->
+  <div class="case-section" id="component-library">
+    <h2>Komponenty, Patterny & Šablony</h2>
+    <p class="ds-section-intro">Komponentní knihovna je srdcem celého systému. Nejde jen o izolované prvky — zahrnuje states &amp; variants, patterns pro opakující se UI vzory a templates pro nejběžnější typy obrazovek.</p>
+    <div class="cl-img-grid">
+      <div class="cl-img-block" style="justify-content:center;padding-right:1rem;">
+        <p class="cl-img-caption cl-img-title" style="margin-bottom:0.75rem;" data-i18n="cl_process_title">Proces komponent</p>
+        <p data-i18n="cl_process_text">Každá komponenta prošla definovaným procesem: audit existujícího UI → analýza → definice variant a stavů → finalizace návrhu → implementace ve figmě → dokumentace → handoff review. Do produkce se nedostala žádná komponenta, která by tímto procesem neprošla.</p>
+      </div>
+      <div class="cl-img-block">
+        <img src="../img/seyfor-component-detail.png" alt="Component detail" style="width:100%;aspect-ratio:6/4;margin:0 auto;border-radius:var(--radius);object-fit:cover;outline:1px solid var(--border-light);" />
+      </div>
+    </div>
+
+    <div class="cl-img-grid">
+      <div class="cl-img-block">
+        <img src="../img/seyfor-component-detail2.png" alt="Component detail 2" style="width:100%;aspect-ratio:6/4;margin:0 auto;border-radius:var(--radius);object-fit:cover;outline:1px solid var(--border-light);" />
+      </div>
+      <div class="cl-img-block" style="justify-content:center;padding-left:1rem;">
+        <p data-i18n="cl_handoff_text">Každá komponenta byla postavena na přesně definovaných pravidlech - mezery, velikosti, zarovnání a další specifikace. Všechny varianty, stavy a interakce byly zdokumentovány ještě před zařazením do knihovny.</p>
+      </div>
+    </div>
+
+    <!-- Component showcase -->
+    <div class="comp-showcase">
+      <div class="comp-showcase-header">
+        <span class="dot"></span>
+        <span data-i18n="components_showcase_header">Komponenty — živá ukázka variant a stavů</span>
+      </div>
+      <div class="comp-showcase-body">
+        <img src="../img/seyfor-designsystem.png" alt="Seyfor design system" style="width:100%;border-radius:var(--radius);object-fit:cover;" />
+      </div>
+    </div>
+
+    <!-- Two images: Figma view + all components overview -->
+    <h3 class="cl-h3" data-i18n="cl_figma_title">Komponenty ve Figmě</h3>
+    <p data-i18n="cl_figma_text">Komponenty byly vytvářeny tak, aby co nejvěrněji odpovídaly finální implementaci v produktu. Každá varianta, stav i vlastnost dostupná ve Figmě měla svůj ekvivalent v aplikaci, díky čemuž byla knihovna spolehlivým zdrojem pro designéry i vývojáře.</p>
+
+    <!-- Figma mockup (preserved) -->
+    <div class="figma-ph">
+      <img src="../img/seyfor-figma.png" alt="Seyfor Figma screenshot" style="width:100%;aspect-ratio:16/9;display:block;object-fit:cover;" />
+    </div>
+
+    <!-- Two-column: all components (3 themes) + states & variants -->
+    <div class="cl-img-grid">
+      <div class="cl-img-block">
+        <img src="../img/seyfor-more-themese.png" alt="Seyfor component library — all components in light, dark, and brand themes" style="width:100%;aspect-ratio:4/3;margin:0 auto;border-radius:var(--radius);object-fit:cover;outline:1px solid var(--border-light);" />
+        <p class="cl-img-caption" data-i18n="cl_ph_all_caption">Příklad komponent napříč třemi tématy — light, dark a vibrant</p>
+      </div>
+      <div class="cl-img-block">
+        <img src="../img/seyfor-more-components.png" alt="Seyfor component library states and variants overview" style="width:100%;aspect-ratio:4/3;margin:0 auto;border-radius:var(--radius);object-fit:cover;outline:1px solid var(--border-light);" />
+        <p class="cl-img-caption" data-i18n="cl_ph_states_caption">Default, hover, focus, active, disabled, loading, error — každá komponenta pokrývá všechny stavy</p>
+      </div>
+    </div>
+
+    <!-- Patterns & Templates -->
+    <h3 class="cl-h3" data-i18n="cl_pt_title">Patterns &amp; Templates</h3>
+    <p data-i18n="cl_pt_text">Nad jednotlivými komponentami vznikla vrstva patternů — opakujících se seskupení komponent, jako jsou datové tabulky, filtry nebo skupiny formulářových polí. Na ně navazovaly šablony, které poskytovaly připravený layout pro nejčastější typy obrazovek.</p>
+
+    <!-- Patterns + Templates image pair -->
+    <div class="cl-img-grid cl-img-grid--tight">
+      <div class="cl-img-block">
+        <img src="../img/seyfor-more-patterns.png" alt="Seyfor patterns overview with data tables, filters, and forms" style="width:100%;aspect-ratio:4/3;margin:0 auto;border-radius:var(--radius);object-fit:cover;outline:1px solid var(--border-light);" />
+        <p class="cl-img-caption" data-i18n="cl_ph_patterns_caption">20+ UI patternů pokrývajících nejběžnější scénáře napříč produkty</p>
+      </div>
+      <div class="cl-img-block">
+        <img src="../img/seyfor-more-templates.png" alt="Seyfor templates overview with ready-made screen layouts" style="width:100%;aspect-ratio:4/3;margin:0 auto;border-radius:var(--radius);object-fit:cover;outline:1px solid var(--border-light);" />
+        <p class="cl-img-caption" data-i18n="cl_ph_templates_caption">10+  šablon, které eliminují opakovanou práci a zvyšují konzistenci i efektivitu návrhu</p>
+      </div>
+    </div>
+
+    <div class="impact-note">
+      <strong data-i18n="cl_result_label">Výsledek:</strong> <span data-i18n="cl_result_text">Nový designér dokázal sestavit kompletní obrazovku produktu z existujících komponent za zlomek původního času. Patterny a šablony zároveň pomohly udržet jednotnost napříč produktem.</span>
+    </div>
+  </div>
+
+  <!-- ④  DESIGN TOKENS ────────────────────────────────────────── -->
+  <div class="case-section" id="tokens">
+    <h2>Design tokeny</h2>
+    <p>Design tokeny tvoří páteř celého systému. Namísto pevně zadaných hodnot nebo barevných kódů pracuje celý systém s pojmenovanými hodnotami, například: — <code style="font-size:0.82rem;background:var(--bg-alt);padding:0.1rem 0.35rem;border-radius:4px;">border/icon-default</code>, <code style="font-size:0.82rem;background:var(--bg-alt);padding:0.1rem 0.35rem;border-radius:4px;">spacing-10</code>, <code style="font-size:0.82rem;background:var(--bg-alt);padding:0.1rem 0.35rem;border-radius:4px;">shadow-M</code>.</p>
+
+    <!-- Token architecture -->
+    <div class="token-diagram">
+      <div class="token-tier">
+        <span class="token-tier-label">Primitive</span>
+        <span class="token-arrow">→</span>
+        <div class="token-chips">
+          <span class="token-chip global">#0f0f0f</span>
+          <span class="token-chip global">#f5f4f0</span>
+          <span class="token-chip global">16px</span>
+          <span class="token-chip global">24px</span>
+          <span class="token-chip global">8px</span>
+          <span class="token-chip global">300ms</span>
+        </div>
+      </div>
+      <div class="token-tier">
+        <span class="token-tier-label">Semantic</span>
+        <span class="token-arrow">→</span>
+        <div class="token-chips">
+          <span class="token-chip semantic">background/default-hover</span>
+          <span class="token-chip semantic">border/primary</span>
+          <span class="token-chip semantic">icon/subtle</span>
+          <span class="token-chip semantic">corner-radius-xs</span>
+          <span class="token-chip semantic">spacing-10</span>
+        </div>
+      </div>
+      <div class="token-tier">
+        <span class="token-tier-label">Component</span>
+        <span class="token-arrow">→</span>
+        <div class="token-chips">
+          <span class="token-chip component">button/border-primary</span>
+          <span class="token-chip component">card/icon-default</span>
+          <span class="token-chip component">fieldStyle/text-positive</span>
+          <span class="token-chip component">toggle/background-selected</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cs-grid">
+      <div class="cs-block">
+        <h4>Architektura tokenů</h4>
+        <ul>
+          <li><strong>Global tokens</strong> — raw hodnoty (hex, px, ms)</li>
+          <li><strong>Semantic tokens</strong> — účelové názvy (color.text.muted)</li>
+          <li><strong>Component tokens</strong> — specifické hodnoty na úrovni komponenty</li>
+        </ul>
+      </div>
+      <div class="cs-block">
+        <h4>Výstup</h4>
+        <ul>
+          <li>SCSS export přímo do produkčního prostředí</li>
+          <li>Figma Variables pro designéry</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Theme switcher -->
+    <h3>Moje role</h3>
+    <p>Navrhl jsem kompletní tříúrovňovou architekturu design tokenů a vedl přechod z prostředí, kde se proměnné nepoužívaly, na systém založený kompletně na design tokenech. Po implementaci se všechny barvy, číselné hodnoty i stíny plně řídily prostřednictvím tokenů. Díky tomu bylo možné snadno vytvářet nová témata bez zásahu do jednotlivých komponent.</p>
+
+    <div class="theme-switcher">
+      <div class="theme-tabs" id="themeTabs">
+        <div class="theme-tab active" data-theme="light">
+          <span class="theme-dot" style="background:#f5f4f0;"></span> Light
+        </div>
+        <div class="theme-tab" data-theme="dark">
+          <span class="theme-dot" style="background:#18181b;"></span> Dark
+        </div>
+        <div class="theme-tab" data-theme="brand-a">
+          <span class="theme-dot" style="background:#d0cde6;"></span> Vibrant
+        </div>
+      </div>
+
+      <div class="theme-panel active" data-theme="light" data-img="../img/seyfor-light.png">
+        <div class="theme-img-ph">
+          <img class="theme-preview-img" src="" alt="Seyfor — theme preview" style="width:100%;height:100%;object-fit:cover;display:block;" />
+        </div>
+      </div>
+
+      <div class="theme-panel" data-theme="dark" data-img="../img/seyfor-dark.png">
+        <div class="theme-img-ph">
+          <img class="theme-preview-img" src="" alt="Seyfor — theme preview (dark)" style="width:100%;height:100%;object-fit:cover;display:block;" />
+        </div>
+      </div>
+
+      <div class="theme-panel" data-theme="brand-a" data-img="../img/seyfor-vibrant.png">
+        <div class="theme-img-ph">
+          <img class="theme-preview-img" src="" alt="Seyfor — theme preview (brand-a)" style="width:100%;height:100%;object-fit:cover;display:block;" />
+        </div>
+      </div>
+
+    </div>
+
+    <div class="impact-note">
+      <strong>Klíčový přínos:</strong> Přechod na dark mode nebo rebrand přestaly být projekty na měsíce. Stačí upravit sémantické tokeny na jednom místě — všechny komponenty se přizpůsobí automaticky.
+    </div>
+  </div>
+
+  <!-- ⑤  CODE & HANDOFF ───────────────────────────────────────── -->
+  <div class="case-section" id="code">
+    <h2>Code handoff a spolupráce s vývojem</h2>
+    <p>Spolupráce s vývojáři byla klíčovou součástí mé práce. Během celého vývojového procesu jsme pravidelně komunikovali, ověřovali, diskutovali technická omezení a iterovali jednotlivá řešení. Součástí práce nebylo pouze předání návrhů, ale aktivní zapojení do implementačního procesu. Pro složitější UI moje role často přesahovala pouhé předání grafického návrhu – aktivně jsem pomáhal s implementací návrhů do produkčního prostředí pomocí našeho interního jazyka PDL a jazyka Python.</p>
+
+    <h3>Ukázka kódu</h3>
+    <p>UI komponenty byly vytvářeny ve vlastním formátu PDL, přičemž Python sloužil pro implementaci pokročilejší logiky a specifického chování. Společně tvořily základ front-endové architektury produktu Vema. Níže je ukázka jedné z komponent, kterou jsem navrhl a implementoval.</p>
+
+    <div class="code-block">
+      <div class="code-tabs">
+        <div class="code-tab active" data-tab="pdl">
+          <span class="tab-dot"></span>widgets.pdl
+        </div>
+        <div class="code-tab" data-tab="python">
+          <span class="tab-dot"></span>widgets.py
+        </div>
+        <button class="code-run-btn" id="codeRunBtn" aria-label="Spustit ukázku">
+          <svg width="10" height="11" viewBox="0 0 10 11" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.5 1.5L8.5 5.5L1.5 9.5V1.5Z"/>
+          </svg>
+          Run
+        </button>
+      </div>
+
+      <div class="code-panel active" id="panel-pdl">
+        <pre><span class="token-kw">pdl</span> <span class="token-ns">tiles</span><span class="token-punct">.</span><span class="token-ns">pdl</span>
+
+<span class="token-kw">fragment</span> <span class="token-cls">Main</span>
+    <span class="token-kw">type</span> <span class="token-cls">Series</span>
+        category<span class="token-punct">:</span> <span class="token-cls">String</span>
+        value<span class="token-punct">:</span> <span class="token-cls">Float</span>
+    <span class="token-kw">presentation</span>
+<span class="token-attr">        Form</span> grafy<span class="token-punct">:</span> <span class="token-cls">GrafyForm</span> <span class="token-str">'Ukázka miniprezentace'</span>
+            <span class="token-attr">Section</span> layout<span class="token-eq">=</span>grid colSize<span class="token-eq">=</span><span class="token-num">1</span> alignContent<span class="token-eq">=</span>stretch sectionStyle<span class="token-eq">=</span>main
+                <span class="token-attr">Panel</span> pritomnost <span class="token-str">"Aktuální přítomnost"</span> valign<span class="token-eq">=</span>stretch
+                    <span class="token-punct">&gt;&gt;</span> pritomnost<span class="token-punct">.</span>header
+                        <span class="token-attr">Button</span> vse <span class="token-str">"Zobrazit vše"</span> importance<span class="token-eq">=</span>low
+                    <span class="token-attr">Group</span> cols<span class="token-eq">=</span><span class="token-num">2</span> readOnly<span class="token-punct">-&gt;</span> highlighted<span class="token-punct">-&gt;</span>
+                        <span class="token-attr">Field</span> string1<span class="token-punct">:</span> <span class="token-cls">String</span><span class="token-eq">=</span><span class="token-str">"21"</span> <span class="token-str">"Přítomných"</span> importance<span class="token-eq">=</span>high width<span class="token-eq">=</span><span class="token-num">1</span> icon<span class="token-eq">=</span><span class="token-str">"user-check"</span> iconSize<span class="token-eq">=</span>s fieldStyle<span class="token-eq">=</span>positive
+                        <span class="token-attr">Field</span> string2<span class="token-punct">:</span> <span class="token-cls">String</span><span class="token-eq">=</span><span class="token-str">"5"</span> <span class="token-str">"Nepřítomných"</span> importance<span class="token-eq">=</span>high width<span class="token-eq">=</span><span class="token-num">1</span> icon<span class="token-eq">=</span><span class="token-str">"user-xmark"</span> iconSize<span class="token-eq">=</span>s fieldStyle<span class="token-eq">=</span>warning
+                    <span class="token-attr">Chart</span> donutChart<span class="token-punct">:</span> <span class="token-cls">DonutChart</span> legendPosition<span class="token-eq">=</span>right align<span class="token-eq">=</span>stretch
+                        <span class="token-attr">ChartSeries</span> series<span class="token-punct">:</span> <span class="token-punct">[</span><span class="token-cls">Series</span><span class="token-punct">]</span> seriesType<span class="token-eq">=</span>n<span class="token-str">'donut'</span> format<span class="token-eq">=</span><span class="token-str">'{0}%'</span> startAngle<span class="token-eq">=</span><span class="token-num">0</span>
+                            <span class="token-attr">Field</span> value<span class="token-punct">:</span> <span class="token-cls">Int</span> <span class="token-str">''</span>
+                            <span class="token-attr">Field</span> category<span class="token-punct">:</span> <span class="token-cls">String</span> <span class="token-str">''</span>
+                <span class="token-attr">Panel</span> dochazka <span class="token-str">"Docházka"</span> valign<span class="token-eq">=</span>stretch
+                    <span class="token-punct">&gt;&gt;</span> dochazka<span class="token-punct">.</span>header
+                        <span class="token-attr">Button</span> vse2 <span class="token-str">"Zobrazit vše"</span> importance<span class="token-eq">=</span>low
+                    <span class="token-attr">DateNavigationBar</span> testDay navigationType<span class="token-eq">=</span>month hideTodayButton
+                    <span class="token-attr">Group</span> cols<span class="token-eq">=</span><span class="token-num">2</span> readOnly<span class="token-punct">-&gt;</span> highlighted<span class="token-punct">-&gt;</span> summary<span class="token-punct">-&gt;</span>
+                        <span class="token-attr">Field</span> stav<span class="token-punct">:</span> <span class="token-cls">Stav</span> <span class="token-str">'Stav docházky'</span> range<span class="token-eq">=</span>stavy<span class="token-punct">(</span><span class="token-fn">@color</span><span class="token-punct">)</span> titlePosition<span class="token-eq">=</span><span class="token-str">"top"</span> width<span class="token-eq">=</span><span class="token-num">1</span>
+                        <span class="token-attr">Field</span> string2s<span class="token-punct">:</span> <span class="token-cls">String</span><span class="token-eq">=</span><span class="token-str">"-57:00"</span> <span class="token-str">"Měsíční saldo"</span> importance<span class="token-eq">=</span>high width<span class="token-eq">=</span><span class="token-num">1</span> fieldStyle<span class="token-eq">=</span>negative
+                    <span class="token-attr">Group</span> valignContent<span class="token-eq">=</span>center valign<span class="token-eq">=</span>stretch
+                        <span class="token-attr">Field</span> linearInt5<span class="token-punct">:</span> <span class="token-cls">Int</span> <span class="token-eq">=</span> <span class="token-num">50</span> <span class="token-str">'Odpracováno'</span> chartType<span class="token-eq">=</span><span class="token-str">'linear'</span> max<span class="token-eq">=</span><span class="token-str">'100'</span> readOnly fieldSize<span class="token-eq">=</span>auto hint<span class="token-eq">=</span><span class="token-str">"74 h z 148 h"</span>
+                <span class="token-attr">Panel</span> panelSkody <span class="token-str">"Škody"</span> valign<span class="token-eq">=</span>stretch valignContent<span class="token-eq">=</span>center
+                    <span class="token-punct">&gt;&gt;</span> panelSkody<span class="token-punct">.</span>header
+                        <span class="token-attr">Button</span> zobrazitvseB <span class="token-str">"Zobrazit vše"</span> importance<span class="token-eq">=</span>low
+                    <span class="token-attr">Empty</span> <span class="token-str">"Žádné škody"</span> description<span class="token-eq">=</span><span class="token-str">"Aktuálně tu nejsou žádné škody."</span> icon<span class="token-eq">=</span><span class="token-str">"car-burst"</span> align<span class="token-eq">=</span>stretch
+<span class="token-kw">    actions</span>
+        <span class="token-kw">on</span> <span class="token-cls">Run</span>
+            grafy<span class="token-punct">.</span>testDay<span class="token-eq">=</span><span class="token-str">"2025-10-12"</span>
+            grafy<span class="token-punct">.</span>stav <span class="token-eq">=</span> <span class="token-punct">{</span>code<span class="token-eq">=</span><span class="token-num">1</span><span class="token-punct">,</span> label<span class="token-eq">=</span><span class="token-str">'Odemčeno'</span><span class="token-punct">,</span> color<span class="token-eq">=</span><span class="token-str">"positive"</span><span class="token-punct">}</span>
+<span class="token-kw">    resolvers</span>
+        stavy
+            <span class="token-punct">[</span>
+                <span class="token-punct">{</span>code<span class="token-eq">=</span><span class="token-num">1</span><span class="token-punct">,</span> label<span class="token-eq">=</span><span class="token-str">'Odemčeno'</span><span class="token-punct">,</span> color<span class="token-eq">=</span><span class="token-str">"postitive"</span><span class="token-punct">}</span><span class="token-punct">,</span>
+                <span class="token-punct">{</span>code<span class="token-eq">=</span><span class="token-num">2</span><span class="token-punct">,</span> label<span class="token-eq">=</span><span class="token-str">'Zpracování'</span><span class="token-punct">,</span> color<span class="token-eq">=</span><span class="token-str">"warning"</span><span class="token-punct">}</span><span class="token-punct">,</span>
+            <span class="token-punct">]</span></pre>
+      </div>
+
+      <div class="code-panel" id="panel-python">
+        <pre><span class="token-kw">import</span> vmsys
+<span class="token-kw">from</span> ikit <span class="token-kw">import</span> <span class="token-punct">(</span><span class="token-cls">PDL</span><span class="token-punct">,</span> <span class="token-cls">PDLFragment</span><span class="token-punct">,</span> <span class="token-cls">PDLEngine</span><span class="token-punct">,</span> <span class="token-cls">Call</span><span class="token-punct">)</span>
+
+
+<span class="token-kw">class</span> <span class="token-cls">Main</span><span class="token-punct">(</span><span class="token-cls">PDLFragment</span><span class="token-punct">)</span><span class="token-punct">:</span>
+    <span class="token-kw">class</span> <span class="token-cls">Actions</span><span class="token-punct">(</span><span class="token-cls">PDLEngine</span><span class="token-punct">)</span><span class="token-punct">:</span>
+        onRun <span class="token-eq">=</span> <span class="token-punct">[</span><span class="token-cls">Call</span><span class="token-punct">(</span><span class="token-str">'nactiData'</span><span class="token-punct">)</span><span class="token-punct">]</span>
+
+        <span class="token-kw">def</span> <span class="token-fn">nactiData</span><span class="token-punct">(</span>self<span class="token-punct">)</span><span class="token-punct">:</span>
+            series <span class="token-eq">=</span> <span class="token-punct">[</span>
+                dict<span class="token-punct">(</span>category<span class="token-eq">=</span><span class="token-str">'21 Přítomných'</span><span class="token-punct">,</span> value<span class="token-eq">=</span><span class="token-num">90</span><span class="token-punct">)</span><span class="token-punct">,</span>
+                dict<span class="token-punct">(</span>category<span class="token-eq">=</span><span class="token-str">'5 Nepřítomných'</span><span class="token-punct">,</span> value<span class="token-eq">=</span><span class="token-num">10</span><span class="token-punct">)</span><span class="token-punct">,</span>
+            <span class="token-punct">]</span>
+            self<span class="token-punct">.</span>grafy <span class="token-eq">=</span> dict<span class="token-punct">(</span>
+                donutChart<span class="token-eq">=</span>dict<span class="token-punct">(</span>series<span class="token-eq">=</span>series<span class="token-punct">)</span><span class="token-punct">,</span>
+            <span class="token-punct">)</span>
+
+
+<span class="token-kw">class</span> <span class="token-cls">Ukazka</span><span class="token-punct">(</span><span class="token-cls">PDL</span><span class="token-punct">)</span><span class="token-punct">:</span>
+    registerName <span class="token-eq">=</span> <span class="token-str">'miniprezentace.pdl'</span>
+    source <span class="token-eq">=</span> <span class="token-cls">True</span>
+    fragments <span class="token-eq">=</span> <span class="token-punct">[</span><span class="token-cls">Main</span><span class="token-punct">]</span>
+
+
+<span class="token-kw">if</span> __name__ <span class="token-eq">==</span> <span class="token-str">"__main__"</span><span class="token-punct">:</span>
+    <span class="token-cls">Ukazka</span><span class="token-punct">.</span>runTestServer<span class="token-punct">(</span>logAll<span class="token-eq">=</span><span class="token-cls">True</span><span class="token-punct">)</span></pre>
+      </div>
+    </div>
+
+    <h3>Jak jsem spolupracoval s vývojovým týmem</h3>
+    <div class="cs-grid" style="margin-bottom:0px;">
+      <div class="cs-block">
+        <h4>Design → vývoj</h4>
+        <p style="font-size:0.85rem;color:var(--fg-muted);line-height:1.7;">Figma soubory byly strukturované tak, aby vývojáři mohli snadno čerpat přímo z návrhu využívajicí komponenty. Rozestupy, typografie i barvy byly přímo navázané na odpovídající tokeny a CSS názvy.</p>
+      </div>
+      <div class="cs-block">
+        <h4>Pravidelné synchronizace</h4>
+        <p style="font-size:0.85rem;color:var(--fg-muted);line-height:1.7;">Pravidelné konzultace s frontend programátory pomáhaly udržovat soulad mezi návrhem a implementací, zkracovaly čas potřebný na realizaci a umožňovaly rychle odhalovat nekonzistence mezi designem a finálním produktem.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥  DOKUMENTACE ─────────────────────────────────────────── -->
+  <div class="case-section" id="documentation">
+    <h2 data-i18n="docs_title">Dokumentace</h2>
+    <p data-i18n-html="docs_intro">Dobré komponenty bez dokumentace nestačí. Napsal jsem dokumentaci v Zeroheight, která pokrývá nejen to, <em>co</em> komponenta dělá, ale <em>kdy</em> ji použít, <em>kdy ne</em>, a jak se chová v různých kontextech.</p>
+
+    <!-- Two preview images side by side -->
+    <div class="doc-preview-row">
+      <div class="doc-preview-block">
+        <div class="doc-preview-img">
+          <div class="doc-preview-inner">
+            <img src="../img/Seyfor-documentation.png" alt="Seyfor documentation screenshot" style="width:100%;aspect-ratio:6/4;margin:0 auto;border-radius:var(--radius);object-fit:cover;outline:1px solid var(--border-light);" />
+          </div>
+        </div>
+        <p class="doc-preview-caption" data-i18n="docs_caption1">Input field – příklad z dokumentace</p>
+      </div>
+      <div class="doc-preview-block">
+        <div class="doc-preview-img">
+        <div class="doc-preview-inner">
+          <img src="../img/Seyfor-documentation2.png" alt="Seyfor documentation screenshot 2" style="width:100%;aspect-ratio:6/4;margin:0 auto;border-radius:var(--radius);object-fit:cover;outline:1px solid var(--border-light);" />
+        </div>
+      </div>
+        <p class="doc-preview-caption" data-i18n="docs_caption2">Input field - příklad z dokumentace / varianty</p>
+      </div>
+    </div>
+
+    <!-- Principles -->
+    <h3 data-i18n="docs_principles_title">Struktura dokumentace</h3>
+    <div class="doc-principles-grid">
+      <div class="doc-principle-card">
+        <span class="doc-principle-icon">🧭</span>
+        <div>
+          <div class="doc-principle-title" data-i18n="docs_principle1_title">Účel a použití</div>
+          <div class="doc-principle-text" data-i18n="docs_principle1_text">Kdy komponentu použít a kdy nikoliv.</div>
+        </div>
+      </div>
+      <div class="doc-principle-card">
+        <span class="doc-principle-icon">📐</span>
+        <div>
+          <div class="doc-principle-title" data-i18n="docs_principle2_title">Anatomie a chování</div>
+          <div class="doc-principle-text" data-i18n="docs_principle2_text">Struktura komponenty, interakce, stavy a uživatelská zpětná vazba.</div>
+        </div>
+      </div>
+      <div class="doc-principle-card">
+        <span class="doc-principle-icon">🎨</span>
+        <div>
+          <div class="doc-principle-title" data-i18n="docs_principle3_title">Design tokeny</div>
+          <div class="doc-principle-text" data-i18n="docs_principle3_text">Reference na rozestupy, typografii, barvy a další systémové hodnoty.</div>
+        </div>
+      </div>
+      <div class="doc-principle-card">
+        <span class="doc-principle-icon">🛠️</span>
+        <div>
+          <div class="doc-principle-title" data-i18n="docs_principle4_title">Implementační poznámky</div>
+          <div class="doc-principle-text" data-i18n="docs_principle4_text">Doporučení pro vývojáře včetně okrajových scénářů a technických omezení.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑦  UX NOVÉ APLIKACE ─────────────────────────────────────── -->
+  <div class="case-section" id="ux-apps">
+    <h2 data-i18n="ux_title">UX návrh nových aplikací</h2>
+    <p data-i18n="ux_intro">Vedle práce na design systému jsem se podílel také na návrhu nových aplikací, které využívaly sdílenou knihovnu komponent. Pracoval jsem na různých modulech, například: Mzdy, Dokumenty a potvrzení, Fakturace, Komunikace nebo Odměňování. Vzhledem k aktuálním prioritám se rozsah a náplň mé práce průběžně měnil, nejčastěji jsem se ale zaměřoval na datově bohatá rozhraní a komplexní workflow scénáře. Níže uvedené příklady představují vybrané obrazovky, které jsem navrhl pro několik těchto modulů.</p>
+
+    <!-- ── Pill module switcher ───────────────────────────────── -->
+    <div class="uxm-switcher" id="uxmSwitcher">
+      <button class="uxm-pill active" data-mod="0"><span data-i18n="erp_name">ERP Dashboard</span></button>
+      <button class="uxm-pill" data-mod="1"><span data-i18n="invoice_name">Fakturace</span></button>
+      <button class="uxm-pill" data-mod="2"><span data-i18n="hr_name">Komunikace</span></button>
+      <button class="uxm-pill" data-mod="3"><span data-i18n="notif_name">Docházka</span></button>
+      <button class="uxm-pill" data-mod="4"><span data-i18n="admin_name">Admin console</span></button>
+      <button class="uxm-pill" data-mod="5"><span data-i18n="warehouse_name">Skladový modul</span></button>
+    </div>
+
+    <!-- ── Carousel ───────────────────────────────────────────── -->
+    <div class="uxm-carousel" id="uxmCarousel">
+      <button class="uxm-arrow" id="uxmPrev" aria-label="Předchozí">←</button>
+      <button class="uxm-arrow" id="uxmNext" aria-label="Další">→</button>
+      <div class="uxm-carousel-viewport">
+        <div class="uxm-carousel-track" id="uxmTrack">
+          <!-- Module 0 — ERP Dashboard -->
+          <div class="uxm-slide" data-mod="0">
+            <img src="../img/seyfor-dashboard.png" alt="ERP Dashboard screenshot" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;cursor:pointer;cursor:zoom-in;" />
+          </div>
+          <!-- Module 1 — Fakturace -->
+          <div class="uxm-slide" data-mod="1">
+            <img src="../img/seyfor-ifak.png" alt="ERP Dashboard screenshot" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;cursor:pointer;cursor:zoom-in;" />
+          </div>
+          <!-- Module 2 — HR Self-service -->
+          <div class="uxm-slide" data-mod="2">
+            <img src="../img/seyfor-kmz.png" alt="ERP Dashboard screenshot" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;cursor:pointer;cursor:zoom-in;" />
+          </div>
+          <div class="uxm-slide" data-mod="2">
+            <img src="../img/seyfor-kmz-settings.png" alt="ERP Dashboard screenshot" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;cursor:pointer;cursor:zoom-in;" />
+          </div>
+          <!-- Module 3 — Notification center -->
+          <div class="uxm-slide" data-mod="3">
+            <img src="../img/seyfor-idch.png" alt="ERP Dashboard screenshot" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;cursor:pointer;cursor:zoom-in;" />
+          </div>
+          <!-- Module 4 — Admin console -->
+          <div class="uxm-slide" data-mod="4">
+            <div class="fake-app" style="background:var(--bg);">
+              <div class="fake-app-topbar" style="background:var(--bg-card);">
+                <div class="fake-app-title">Admin console</div>
+                <span style="margin-left:auto;"><span class="fc-btn primary sm">+ Přidat uživatele</span></span>
+              </div>
+              <div class="fake-app-body">
+                <div class="fake-app-sidebar">
+                  <div class="fake-app-sidebar-item active">Uživatelé</div>
+                  <div class="fake-app-sidebar-item">Role</div>
+                  <div class="fake-app-sidebar-item">Oprávnění</div>
+                  <div class="fake-app-sidebar-item">Audit log</div>
+                </div>
+                <div class="fake-app-main">
+                  <div class="fake-table">
+                    <div class="fake-table-head">
+                      <div class="fake-cell head">Uživatel</div>
+                      <div class="fake-cell head">Role</div>
+                      <div class="fake-cell head">Produkty</div>
+                      <div class="fake-cell head">Stav</div>
+                    </div>
+                    <div class="fake-table-row"><div class="fake-cell" style="display:flex;align-items:center;gap:0.35rem;"><span class="fc-avatar a" style="width:20px;height:20px;font-size:0.58rem;">JN</span>J. Novák</div><div class="fake-cell">Admin</div><div class="fake-cell">ERP, HR</div><div class="fake-cell"><span class="fc-badge success" style="font-size:0.6rem;">Aktivní</span></div></div>
+                    <div class="fake-table-row"><div class="fake-cell" style="display:flex;align-items:center;gap:0.35rem;"><span class="fc-avatar b" style="width:20px;height:20px;font-size:0.58rem;">PK</span>P. Kovář</div><div class="fake-cell">Editor</div><div class="fake-cell">Fakturace</div><div class="fake-cell"><span class="fc-badge success" style="font-size:0.6rem;">Aktivní</span></div></div>
+                    <div class="fake-table-row"><div class="fake-cell" style="display:flex;align-items:center;gap:0.35rem;"><span class="fc-avatar c" style="width:20px;height:20px;font-size:0.58rem;">MF</span>M. Fišer</div><div class="fake-cell">Viewer</div><div class="fake-cell">Sklad</div><div class="fake-cell"><span class="fc-badge neutral" style="font-size:0.6rem;">Neaktivní</span></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="uxm-slide" data-mod="4">
+            <div class="uxm-ph-content"><span class="uxm-ph-icon">🔐</span><span class="uxm-ph-label">[ Admin console — role editor: matice oprávnění ]</span></div>
+          </div>
+          <!-- Module 5 — Skladový modul -->
+          <div class="uxm-slide" data-mod="5">
+            <div class="fake-app" style="background:var(--bg);">
+              <div class="fake-app-topbar" style="background:var(--bg-card);">
+                <div class="fake-app-title">Skladový modul</div>
+                <span style="margin-left:auto;display:flex;gap:0.4rem;"><span class="fc-btn secondary sm">Příjem</span><span class="fc-btn primary sm">Výdej</span></span>
+              </div>
+              <div class="fake-app-body">
+                <div class="fake-app-sidebar">
+                  <div class="fake-app-sidebar-item active">Přehled</div>
+                  <div class="fake-app-sidebar-item">Příjem</div>
+                  <div class="fake-app-sidebar-item">Výdej</div>
+                  <div class="fake-app-sidebar-item">Inventura</div>
+                  <div class="fake-app-sidebar-item">Reporty</div>
+                </div>
+                <div class="fake-app-main">
+                  <div class="fake-row">
+                    <div class="fake-card-sm"><div class="fk-label">Skladové položky</div><div class="fk-val">1 248</div></div>
+                    <div class="fake-card-sm"><div class="fk-label">Pod minimem</div><div class="fk-val" style="color:#dc2626;">7</div></div>
+                    <div class="fake-card-sm"><div class="fk-label">Pohyby dnes</div><div class="fk-val">43</div></div>
+                  </div>
+                  <div class="fake-table">
+                    <div class="fake-table-head">
+                      <div class="fake-cell head">Kód</div>
+                      <div class="fake-cell head">Název</div>
+                      <div class="fake-cell head">Stav</div>
+                      <div class="fake-cell head">Minimum</div>
+                    </div>
+                    <div class="fake-table-row"><div class="fake-cell">A-042</div><div class="fake-cell">Díl XL-4</div><div class="fake-cell"><span class="fc-badge error" style="font-size:0.6rem;">8 ks</span></div><div class="fake-cell">20 ks</div></div>
+                    <div class="fake-table-row"><div class="fake-cell">B-101</div><div class="fake-cell">Sestava B</div><div class="fake-cell"><span class="fc-badge success" style="font-size:0.6rem;">142 ks</span></div><div class="fake-cell">50 ks</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="uxm-slide" data-mod="5">
+            <div class="uxm-ph-content"><span class="uxm-ph-icon">📥</span><span class="uxm-ph-label">[ Sklad — příjem zboží: scanování a potvrzení ]</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carousel controls -->
+      <div class="uxm-carousel-footer">
+        <div class="uxm-dots" id="uxmDots"></div>
+      </div>
+
+      <!-- Caption bar -->
+      <div class="uxm-caption-bar">
+        <span class="uxm-caption-module" id="uxmCaptionModule">ERP Dashboard</span>
+        <span class="uxm-caption-sep">—</span>
+        <span class="uxm-caption-text" id="uxmCaptionText">Hlavní přehled: KPIs, aktivní objednávky, real-time upozornění</span>
+        <span class="uxm-slide-counter" id="uxmCounter">1 / 2</span>
+      </div>
+    </div>
+
+    <div class="impact-note" style="margin-top:1.2rem;" data-i18n-html="ux_approach_text">
+      <strong>Přístup:</strong> U každého modulu jsem začínal analýzou, tedy identifikací problémů a definováním požadavků ve spolupráci s analytiky. Na základě získaných poznatků jsem vytvářel wireframy a následně high-fidelity prototypy. Návrhy jsem průběžně konzultoval s analytiky, vývojáři i product ownery v několika kolech revizí. Po schválení jsem finální řešení předal programátorům a dále asistoval u jeho integrace do produktu.
+    </div>
+  </div>
+
+</main>
+
+<!-- ── Code Run Modal ────────────────────────────────────────────── -->
+<div class="coderun-backdrop" id="codeRunModal" role="dialog" aria-modal="true" aria-label="Ukázka výstupu">
+  <div class="coderun-card">
+    <div class="coderun-header">
+      <div>
+        <div class="coderun-badge">Výstup · miniprezentace.pdl</div>
+        <div class="coderun-title">Ukázka výsledného UI</div>
+      </div>
+      <button class="coderun-close" id="codeRunClose" aria-label="Zavřít">×</button>
+    </div>
+    <div class="coderun-content">
+      <img src="../img/seyfor-pdl.png" alt="Ukázka výsledného UI z PDL kódu" class="coderun-img" />
+      <p class="coderun-caption">Výsledné UI vygenerované z PDL definice — dashboard s přítomností, docházkou a přehledem škod. Komponenty jsou plně interaktivní a reagují na data z resolverů.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── UXM Lightbox Modal ───────────────────────────────────────── -->
+<div class="uxm-lightbox-backdrop" id="uxmLightbox" role="dialog" aria-modal="true" aria-label="Fullscreen preview">
+  <div class="uxm-lightbox-card">
+    <div class="uxm-lightbox-header">
+      <div style="display:flex;flex-direction:column;gap:0.15rem;">
+        <span class="uxm-lightbox-badge" id="uxmLbBadge">UX Design</span>
+        <span class="uxm-lightbox-title" id="uxmLbTitle">Preview</span>
+      </div>
+      <button class="uxm-lightbox-close" id="uxmLbClose" aria-label="Zavřít">×</button>
+    </div>
+    <div class="uxm-lightbox-content">
+      <div class="uxm-lightbox-inner" id="uxmLbInner"></div>
+    </div>
+    <div class="uxm-lightbox-footer">
+      <span id="uxmLbCounter">1 / 1</span>
+      <div class="uxm-lightbox-nav">
+        <button class="uxm-lightbox-nav-btn" id="uxmLbPrev" aria-label="Předchozí">←</button>
+        <button class="uxm-lightbox-nav-btn" id="uxmLbNext" aria-label="Další">→</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer" style="border-top:1px solid var(--border-light);margin-top:4rem;overflow:visible;">
+  <div class="footer-inner">
+    <span class="footer-copy">© <strong>Ota Škvor</strong>. All rights reserved.</span>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <a href="../index.html" class="back-to-portfolio">Back to portfolio</a>
+      <div class="lang-dropdown" id="langDropdown">
+        <button class="lang-dropdown-trigger" id="langTrigger" aria-haspopup="true" aria-expanded="false">
+          <span class="lang-flag" id="langFlag">EN</span>
+          <span class="lang-chevron" aria-hidden="true"></span>
+        </button>
+        <div class="lang-dropdown-menu" id="langMenu" role="menu" style="left:0;right:unset;">
+          <button class="lang-option active" data-lang="en" role="menuitem">
+            <span>EN</span><span class="lang-option-label">English</span>
+          </button>
+          <button class="lang-option" data-lang="cs" role="menuitem">
+            <span>CZ</span><span class="lang-option-label">Česky</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+<script>
+/* ── Language switcher for seyfor page ────────────────── */
+const seyforTranslations = {
+  en: {
+    page_title: 'Seyfor — Ota Škvor',
+    back_link: 'Back',
+    toc_overview: 'Overview',
+    toc_role: 'Role',
+    toc_design_system: 'Design System',
+    toc_component_library: 'Components & Patterns',
+    toc_tokens: 'Tokens',
+    toc_code: 'Code & Handoff',
+    toc_documentation: 'Docs',
+    toc_ux_apps: 'UX Apps',
+    summarize_title: 'Seyfor — tldr',
+    summarize_text: 'I led design system development for one of the largest Czech software companies. I built a component library, introduced design tokens, wrote documentation, and established collaboration processes across 10+ product teams. I also designed new application modules from scratch.',
+    hero_epoch: '2024 — Present',
+    hero_title: 'Seyfor',
+    hero_sub: 'Seyfor is one of the largest Czech software companies — ERP, CRM, HR systems, and cloud solutions. I joined as a UI/UX Designer working primarily on Vema, an HR product used by companies to manage people, payroll, and internal processes.',
+    stat1_num: '10+',
+    stat1_label: 'product teams',
+    stat2_num: '120+',
+    stat2_label: 'components in library',
+    stat3_num: '2+',
+    stat3_label: 'years of work',
+    stat4_num: '2+',
+    stat4_label: 'years of work',
+    screenshot_label: '[ Screenshot — design system overview / Figma component library ]',
+    role_title: 'My role',
+    role_intro: 'I joined a team of four designers working on design system that had been established only a few years before my arrival, so my first challenge was to quickly understand a highly complex product ecosystem. My role was to help evolve the design system, improve its component architecture, and apply it consistently across new product features and application modules.',
+    role_work_title: 'Work type',
+    role_work_desc: 'Design system, component library, design tokens, documentation, product design, and UI implementation.',
+    role_resp_title: 'Responsibilities',
+    role_resp_desc: 'Responsible for UI components, design tokens, and the technical quality of design deliverables before handoff to developers.',
+    role_collab_title: 'Collaboration',
+    role_collab_desc: 'Collaboration with web, application, and system developers, business analysts, and testers across multiple product teams.',
+    context_title: 'Context and challenge',
+    context_text1: 'When I joined the team, the design system was still in an early stage. Design tokens were not yet established, component libraries were fragmented, and documentation lacked clear structure. Over time, I helped build a shared component library, introduced a token-based foundation, improved documentation standards, and established more consistent workflows between design and development. These changes made the system easier to scale while improving collaboration across teams.',
+    context_text2: 'I worked with very diverse stakeholders:',
+    before_title: 'Before',
+    before_desc: 'Multiple Figma libraries. Each team defined colors, spacing, and typography in its own way. This resulted in implementation errors during design handoff.',
+    after_title: 'After',
+    after_desc: 'One shared Figma library. Token-driven architecture. Clear processes for adding components, review and documentation.',
+    ds_title: 'Design System',
+    ds_intro: 'The goal was to establish a shared design foundation for Vema\'s growing product ecosystem. As the platform expanded, maintaining consistency became increasingly difficult. The design system introduced shared standards that reduced errors and improved collaboration.',
+    ds_sub: 'The system combines tokens, components, patterns, templates, and application designs to deliver consistent and scalable user experiences.',
+    ds_flowchart_label: 'System architecture / token pipeline flowchart goes here',
+    ds_components: '120+',
+    ds_components_label: 'components',
+    ds_patterns: '20+',
+    ds_patterns_label: 'patterns',
+    ds_templates: '10+',
+    ds_templates_label: 'templates',
+    ds_tokens: '1000+',
+    ds_tokens_label: 'tokens',
+    ds_themes: '5',
+    ds_themes_label: 'themes / brands',
+    cl_title: 'Components, Patterns & Templates',
+    cl_intro: 'The reusable layer of the design system consists of components, patterns, and templates. Together they provide teams with building blocks for creating consistent experiences while reducing repetitive design and implementation work.',
+    cl_process_title: 'How I built the components',
+    cl_process_text: 'Every component followed a structured process: UI audit (when applicable) → research & analysis → variant and state definition → design finalization → Figma implementation with variables → documentation → developer handoff. Nothing went to production without passing through this process.',
+    cl_process_doc_label: 'Process Documentation',
+    cl_handoff_label: 'States & variants',
+    cl_handoff_text: 'Every component was built around clearly defined spacing, sizing, and alignment rules. All variants, states, properties, and behavioral specifications were mapped and documented before becoming part of the library.',
+    components_showcase_header: 'Components — example of variants and states',
+    cl_figma_title: 'Components in Figma',
+    cl_figma_text: 'Components were built to match the implemented product one-to-one. Every variant, state, and property available in Figma had a corresponding implementation in the application, making the library a reliable source of truth for both designers and developers.',
+    cl_ph_all_label: 'All components — 3 themes (light, dark, brand)',
+    cl_ph_states_label: 'States & Variants — component interaction states',
+    cl_ph_replace: 'Replace with your own image',
+    cl_ph_all_caption: 'Example of components across three themes — light mode, dark mode, and vibrant mode',
+    cl_ph_states_caption: 'Enabled, hover, focus, disabled, pressed, error — each component variant covers all states',
+    cl_pt_title: 'Patterns & Templates',
+    cl_pt_text: 'Above individual components sit patterns — recurring UI scenarios like data tables, filters, or field groups. Templates then provide ready-made layouts for the most common screen types in the product.',
+    cl_ph_patterns_label: 'Patterns — data tables, filters, forms',
+    cl_ph_templates_label: 'Templates — ready-made screen layouts',
+    cl_ph_patterns_caption: '20+ UI patterns covering the most common scenarios across Seyfor products',
+    cl_ph_templates_caption: '10+ page templates eliminate repetitive work, ensure consistency, and improve the overall efficiency.',
+    cl_result_label: 'Result:',
+    cl_result_text: 'A new designer can assemble a full product screen from existing components in a fraction of the time. Patterns and templates eliminate repetitive layout work and ensure consistency across products.',
+    figma_title: 'Figma library',
+    figma_text: 'Each component in Figma covers all interaction states — default, hover, focus, active, disabled, loading, error. I work with Figma variables so variants can be switched with one click, not just in prototypes, but also when handing off to developers.',
+    result_text: '<strong>Result:</strong> A new designer can assemble a full product screen from existing components in a fraction of the time. Patterns and templates eliminate repetitive layout work — no reinventing the wheel.',
+    tokens_title: 'Design Tokens',
+    tokens_intro: 'Tokens are the backbone of the entire system. Instead of hardcoded hex values or px numbers, everyone works with named values — <code style="font-size:0.82rem;background:var(--bg-alt);padding:0.1rem 0.35rem;border-radius:4px;">border/icon-default</code>, <code style="font-size:0.82rem;background:var(--bg-alt);padding:0.1rem 0.35rem;border-radius:4px;">spacing-10</code>, <code style="font-size:0.82rem;background:var(--bg-alt);padding:0.1rem 0.35rem;border-radius:4px;">shadow-M</code>.',
+    token_arch_title: 'Token architecture',
+    token_arch_global: '<strong>Global tokens</strong> — raw values (hex, px, ms)',
+    token_arch_semantic: '<strong>Semantic tokens</strong> — purpose-driven names (border/text-muted)',
+    token_arch_component: '<strong>Component tokens</strong> — specific component-level values',
+    token_output_title: 'Output',
+    token_output_css: 'SCSS automatically exported into the production environment',
+    token_output_json: 'Figma Variables for designers',
+    token_output_figma: '',
+    token_output_support: 'Support for dark/light and brand themes',
+    theming_title: 'My role',
+    theming_text: 'I designed the complete three-level token architecture and led the transition from a product that did not use variables to a system where colors, spacing, shadows, and other values are fully driven by design tokens. After the implementation, I remained responsible for the token system as its main owner, maintaining its structure and guiding how tokens were used across the product. I also designed an alternative Light theme as a more modern direction for the product. The theme was received positively and is now being adopted by more users over time.',
+    key_shift_text: '<strong>Key shift:</strong> New themes or rebrands stopped being multi-month projects. Just update tokens — all components adapt automatically.',
+    code_title: 'Code handoff and collaboration with development',
+    code_intro: 'Collaboration with developers was a regular and essential part of my work. While working on the design system, we communicated throughout the development process, validating ideas, discussing technical constraints, and iterating on components when needed. For new application screens, my role often went beyond static design handoff — I actively helped bring designs into production using our internal PDL language and Python for additional functionality.',
+    code_sample_title: 'Code samples',
+    code_sample_text: 'Internally, we used a custom PDL format to describe and structure UI components, while Python provided additional logic and functionality where needed. Together, these two layers formed the foundation of Vema’s front end. Below is an code example of one of my designs I created and implemented using this workflow.',
+    code_collab_title: 'How I collaborate with the development team',
+    code_handoff_title: 'Design → Dev handoff',
+    code_handoff_desc: 'Figma files are structured so developers can read from them without intermediaries. Spacing, typography, colors — everything references tokens with corresponding CSS names.',
+    code_feedback_title: 'Development syncs',
+    code_feedback_desc: 'Regular syncs with frontend lead developers helped us stay aligned throughout implementation. Planned and ad hoc meetings helped reduce implementation errors, clarify task-specific questions, and quickly resolve inconsistencies between design intent and the final product.',
+    code_version_title: 'Versioning',
+    code_version_desc: 'Semantic versioning of components — no breaking changes without notice. Changelog is part of component documentation.',
+    code_pipeline_title: 'Pipeline',
+    code_pipeline_desc: 'Figma Variables → export JSON → PDL/Style Dictionary → CSS custom properties + Android/iOS tokens. One source of truth, three platforms.',
+    docs_title: 'Documentation',
+    docs_intro: 'Documentation served as supporting material for Figma handoff and as a practical guide for everyone working with the design system. For each component, I documented its purpose, usage examples, states, behavior, token references, and implementation notes. This helped designers, frontend developers, application programmers, analysts, and customers better understand how to use the system consistently in their work.',
+    docs_caption1: 'Input field - Documentation example',
+    docs_caption2: 'Input field - Documentation example / variants',
+    docs_principles_title: 'Documentation structure',
+    docs_principle1_title: 'Purpose & use cases',
+    docs_principle1_text: 'When to use the component and when not to use it.',
+    docs_principle2_title: 'Anatomy & behavior',
+    docs_principle2_text: 'Component structure, interactions, states, and user feedback.',
+    docs_principle3_title: 'Design tokens',
+    docs_principle3_text: 'References to spacing, typography, colors and other system tokens.',
+    docs_principle4_title: 'Implementation notes',
+    docs_principle4_text: 'Guidance for developers, including edge cases and accessibility considerations.',
+    ux_title: 'UX design for new applications',
+    ux_intro: 'Alongside the design system, I designed new application pages and modules from the ground up using a shared component library. I owned the UX and UI design of multiple enterprise modules, including Payroll, Documents & Certificates, Employee Communication, Invoicing, Rewards, and more. Depending on business priorities, I worked across different domains, often focusing on data-rich interfaces, operational workflows, and process optimization. The examples below showcase selected screens I designed from several of these modules.',
+    erp_name: 'ERP Dashboard',
+    erp_desc: 'Overview dashboard for management — KPIs, revenue, real-time alerts.',
+    invoice_name: 'Invoicing',
+    invoice_desc: 'New UX flow for invoice creation and management — 60% reduction in cognitive load.',
+    hr_name: 'Communication',
+    hr_desc: 'Employee portal — attendance, time off, benefits, documents in one place.',
+    notif_name: 'Attendance',
+    notif_desc: 'Centralized notification system across all Seyfor products.',
+    admin_name: 'Admin console',
+    admin_desc: 'User, role and permission management — complex but clear interface for admins.',
+    warehouse_name: 'Warehouse module',
+    warehouse_desc: 'Inventory management, goods movement, overviews and reports for warehouse staff and managers.',
+    overview_tab: 'Overview',
+    detail_tab: 'Detail view',
+    mobile_tab: 'Mobile',
+    edge_cases_tab: 'Edge cases',
+    prototype_tab: 'Prototype flow',
+    erp_screen1: 'Personalized dashboard with your most important updates',
+    erp_screen2: 'Order detail: timeline, items, customer communication',
+    erp_screen3: 'Responsive layout on 375px — mobile-first approach',
+    erp_screen4: 'Edge cases: empty state, error state, loading skeletons',
+    erp_screen5: 'Prototype flow: full user journey from login to order completion',
+    ux_approach_text: '<strong>Approach:</strong> For each module, I started with an analysis phase — identifying existing pain points or defining the scope of new functionality through stakeholder workshops, analyst interviews, and requirements review. Based on these insights, I translated business needs into user flows, wireframes, and high-fidelity prototypes. The process involved continuous collaboration with analysts, developers, and product owners through multiple review and iteration cycles. After validation and approval, I implemented the final designs and supported their integration into the product.',
+    footer_copy: '© <strong>Ota Škvor</strong>. All rights reserved.',
+    footer_back: 'Back to portfolio'
+  },
+  cs: {
+    page_title: 'Seyfor — Ota Škvor',
+    back_link: 'Zpět',
+    toc_overview: 'Přehled',
+    toc_role: 'Moje role',
+    toc_design_system: 'Design System',
+    toc_component_library: 'Komponenty & Patterny',
+    toc_tokens: 'Tokeny',
+    toc_code: 'Kód & Handoff',
+    toc_documentation: 'Dokumentace',
+    toc_ux_apps: 'UX Aplikace',
+    summarize_title: 'Seyfor — tldr',
+    summarize_text: 'Vedl jsem vývoj design systému pro jednu z největších českých softwarových společností. Vybudoval jsem komponentní knihovnu, zavedl design tokens, napsal dokumentaci a nastavil procesy spolupráce s vývojáři napříč 10+ produktovými týmy. Zároveň jsem navrhoval nové aplikační moduly od začátku.',
+    hero_epoch: '2022 — současnost',
+    hero_title: 'Seyfor',
+    hero_sub: 'Seyfor je jednou z největších českých softwarových společností zaměřených na ERP, CRM, HR systémy a cloudová řešení. Do firmy jsem nastoupil jako UX/UI designér a pracoval především na produktu Vema – HR platformě, kterou firmy využívají pro správu zaměstnanců, mezd a interních procesů.',
+    stat1_num: '10+',
+    stat1_label: 'produktových týmů',
+    stat2_num: '120+',
+    stat2_label: 'komponent v knihovně',
+    stat3_num: '2+',
+    stat3_label: 'roky práce',
+    stat4_num: '2×',
+    stat4_label: 'rychlejší onboarding',
+    screenshot_label: '[ Screenshot — design system overview / Figma component library ]',
+    role_title: 'Moje role',
+    role_intro: 'Připojil jsem se ke čtyřčlennému týmu designérů, který rozvíjel design systém vytvořený teprve několik let před mým nástupem. Mým prvním úkolem bylo rychle porozumět rozsáhlému a komplexnímu produktovému ekosystému. Následně jsem se podílel na rozvoji design systému, zlepšování architektury komponent a na jeho konzistentním využívání napříč novými aplikacemi.',
+    role_work_title: 'Náplň práce',
+    role_work_desc: 'Design systém, knihovna komponent, design tokeny, dokumentace, návrh produktů a UX handoff.',
+    role_resp_title: 'Zodpovědnosti',
+    role_resp_desc: 'Správa UI komponent, design tokenů a dohled nad kvalitou výstupů, za naše oddělení, před jejich předáním vývojářům.',
+    role_collab_title: 'Spolupráce',
+    role_collab_desc: 'Úzká spolupráce s webovými, aplikačními i systémovými vývojáři, business analytiky a dalšími designéry napříč celou společností.',
+    context_title: 'Kontext a výzva',
+    context_text1: 'Když jsem do týmu nastoupil, design systém byl stále v rané fázi vývoje. Design tokeny ještě nebyly zavedené, knihovny byly roztříštěné a dokumentace postrádala jasnou strukturu. Postupně jsem pomáhal budovat sdílenou knihovnu komponent, zavádět architekturu založenou na tokenech, zlepšovat dokumentaci a nastavovat efektivnější procesy spolupráce mezi designem a vývojem. ',
+    before_title: 'Předtím',
+    before_desc: 'Samostatné Figma knihoveny. Každý tým si definoval barvy, mezery a typografii po svém, což vedlo k nekonzistenci a chybám při implementaci.',
+    after_title: 'Poté',
+    after_desc: 'Jedna sdílená Figma knihovna, architektura založená na design tokenech a jasně definované procesy pro tvorbu, revizi a dokumentaci komponent.',
+    ds_title: 'Design Systém',
+    ds_intro: 'Cílem bylo vytvořit jednotný design systém pro rostoucí ekosystém produktu Vema. S rozšiřováním platformy bylo stále náročnější udržovat jednotlivé aplikace konzistentní. Design systém přinesl sdílené standardy, které snížily chybovost a zlepšily použitelnost produktu.',
+    ds_sub: 'Design systém propojuje design tokeny, komponenty, patterny, šablony a návrhy aplikací do jednoho konzistentního a škálovatelného řešení.',
+    ds_flowchart_label: 'Sem patří flowchart — architektura systému / token pipeline',
+    ds_components: '120+',
+    ds_components_label: 'komponent',
+    ds_patterns: '20+',
+    ds_patterns_label: 'paternů',
+    ds_templates: '10+',
+    ds_templates_label: 'šablon',
+    ds_tokens: '1000+',
+    ds_tokens_label: 'tokenů',
+    ds_themes: '5',
+    ds_themes_label: 'témat / brandů',
+    cl_title: 'Komponenty, Patterny & Šablony',
+    cl_intro: 'Design systém je tvořena komponentami, tokeny, patterny a šablonami. Společně představují hlavní stavební bloky pro tvorbu uživatelských rozhraní a zároveň snižují množství opakované práce při návrhu i implementaci.',
+    cl_process_title: 'Jak jsem vytvářel komponenty',
+    cl_process_text: 'Každá komponenta prošla definovaným procesem: audit existujícího UI → analýza → definice variant a stavů → finalizace návrhu → implementace ve figmě → dokumentace → handoff review. Do produkce se nedostala žádná komponenta, která by tímto procesem neprošla.',
+    cl_process_doc_label: 'Dokumentace procesu',
+    cl_handoff_label: 'States & variants',
+    cl_handoff_text: 'Každá komponenta byla postavena na přesně definovaných pravidlech - mezery, velikosti, zarovnání a další specifikace. Všechny varianty, stavy a interakce byly zdokumentovány ještě před zařazením do knihovny.',
+    components_showcase_header: 'Komponenty — ukázka variant a stavů',
+    cl_figma_title: 'Komponenty ve Figmě',
+    cl_figma_text: 'Komponenty byly vytvářeny tak, aby co nejvěrněji odpovídaly finální implementaci v produktu. Každá varianta, stav i vlastnost dostupná ve Figmě měla svůj ekvivalent v aplikaci, díky čemuž byla knihovna spolehlivým zdrojem pro designéry i vývojáře.',
+    cl_ph_all_label: 'Všechny komponenty — 3 témata (světlé, tmavé, brand)',
+    cl_ph_states_label: 'States & Variants — interakční stavy komponent',
+    cl_ph_replace: 'Nahraď vlastním obrázkem',
+    cl_ph_all_caption: 'Příklad komponent napříč třemi tématy — light, dark a vibrant',
+    cl_ph_states_caption: 'Default, hover, focus, active, disabled, loading, error — každá komponenta pokrývá všechny stavy',
+    cl_pt_title: 'Patterny a šablony',
+    cl_pt_text: 'Nad jednotlivými komponentami vznikla vrstva patternů — opakujících se seskupení komponent, jako jsou datové tabulky, filtry nebo skupiny formulářových polí. Na ně navazovaly šablony, které poskytovaly připravený layout pro nejčastější typy obrazovek.',
+    cl_ph_patterns_label: 'Patterns — data tables, filtry, formuláře',
+    cl_ph_templates_label: 'Templates — hotové layouty obrazovek',
+    cl_ph_patterns_caption: '20+ UI patternů pokrývajících nejběžnější scénáře napříč produkty',
+    cl_ph_templates_caption: '10+  šablon, které eliminují opakovanou práci a zvyšují konzistenci i efektivitu návrhu',
+    cl_result_label: 'Výsledek:',
+    cl_result_text: 'Nový designér dokázal sestavit kompletní obrazovku produktu z existujících komponent za zlomek původního času. Patterny a šablony zároveň pomohly udržet jednotnost napříč produktem.',
+    figma_title: 'Figma knihovna',
+    figma_text: 'Každá komponenta ve Figmě pokrývá všechny stavy interakce — default, hover, focus, active, disabled, loading, error. Pracuji s Figma variables, aby šly varianty přepínat jedním kliknutím, nejen v prototypech, ale i při předávání vývojářům.',
+    result_text: '<strong>Výsledek:</strong> Nový designér dokázal sestavit kompletní obrazovku produktu z existujících komponent za zlomek původního času. Patterny a šablony zároveň pomohly udržet jednotnost napříč produktem.',
+    tokens_title: 'Design tokeny',
+    tokens_intro: 'Design tokeny tvoří páteř celého systému. Namísto pevně zadaných hodnot nebo barevných kódů pracuje celý systém s pojmenovanými hodnotami, například: — <code style="font-size:0.82rem;background:var(--bg-alt);padding:0.1rem 0.35rem;border-radius:4px;">border/icon-default</code>, <code style="font-size:0.82rem;background:var(--bg-alt);padding:0.1rem 0.35rem;border-radius:4px;">spacing-10</code>, <code style="font-size:0.82rem;background:var(--bg-alt);padding:0.1rem 0.35rem;border-radius:4px;">shadow-M</code>.',
+    token_arch_title: 'Architektura tokenů',
+    token_arch_global: '<strong>Primitives</strong> — základní hodnoty (např. px, hex)',
+    token_arch_semantic: '<strong>Semantic</strong> — účelové názvy (border/text-muted)',
+    token_arch_component: '<strong>Component specific</strong> — určené pro konkrétní komponenty',
+    token_output_title: 'Výstup',
+    token_output_css: 'SCSS export přímo do produkčního prostředí',
+    token_output_json: 'Figma Variables pro designéry',
+    token_output_figma: 'Figma Variables pro designéry',
+    token_output_support: 'Podpora dark/light a brandových témat',
+    theming_title: 'Moje role',
+    theming_text: 'Navrhl jsem kompletní tříúrovňovou architekturu design tokenů a vedl přechod z prostředí, kde se proměnné nepoužívaly, na systém založený kompletně na design tokenech. Po implementaci se všechny barvy, číselné hodnoty i stíny plně řídily prostřednictvím tokenů. Díky tomu bylo možné snadno vytvářet nová témata bez zásahu do jednotlivých komponent.',
+    key_shift_text: '<strong>Klíčový přínos:</strong> Přechod na dark mode nebo rebrand přestaly být projekty na měsíce. Stačí upravit sémantické tokeny na jednom místě — všechny komponenty se přizpůsobí automaticky.',
+    code_title: 'Code handoff a spolupráce s vývojem',
+    code_intro: 'Spolupráce s vývojáři byla klíčovou součástí mé práce. Během celého vývojového procesu jsme pravidelně komunikovali, ověřovali, diskutovali technická omezení a iterovali jednotlivá řešení. Součástí práce nebylo pouze předání návrhů, ale aktivní zapojení do implementačního procesu. Pro složitější UI moje role často přesahovala pouhé předání grafického návrhu – aktivně jsem pomáhal s implementací návrhů do produkčního prostředí pomocí našeho interního jazyka PDL a jazyka Python.',
+    code_sample_title: 'Ukázka kódu',
+    code_sample_text: 'UI komponenty byly vytvářeny ve vlastním formátu PDL, přičemž Python sloužil pro implementaci pokročilejší logiky a specifického chování. Společně tvořily základ front-endové architektury produktu Vema. Níže je ukázka jedné z komponent, kterou jsem navrhl a implementoval.',
+    code_collab_title: 'Jak jsem spolupracoval s vývojovým týmem',
+    code_handoff_title: 'Design → vývoj',
+    code_handoff_desc: 'Figma soubory byly strukturované tak, aby vývojáři mohli snadno čerpat přímo z návrhu využívajicí komponenty. Rozestupy, typografie i barvy byly přímo navázané na odpovídající tokeny a CSS názvy.',
+    code_feedback_title: 'Pravidelné synchronizace',
+    code_feedback_desc: 'Pravidelné konzultace s frontend programátory pomáhaly udržovat soulad mezi návrhem a implementací, zkracovaly čas potřebný na realizaci a umožňovaly rychle odhalovat nekonzistence mezi designem a finálním produktem.',
+    code_version_title: 'Versioning',
+    code_version_desc: 'Sémantické verzování komponent — žádné breaking changes bez avíza. Changelog je součástí každé komponenty v dokumentaci.',
+    code_pipeline_title: 'Pipeline',
+    code_pipeline_desc: 'Figma Variables → export JSON → PDL/Style Dictionary → CSS custom properties + Android/iOS tokens. Jeden zdroj pravdy, tři platformy.',
+    docs_title: 'Dokumentace',
+    docs_intro: 'Dokumentace byla klíčovou součástí UX handoffu a zároveň praktickým průvodcem pro práci s design systémem. U každé komponenty jsem popisoval její účel, použití, příklady, stavy, pravidla chování, související tokeny i implementační poznámky. Díky tomu mohli frontend vývojáři, aplikační programátoři, analytici i zákazníci systém lépe používat i rozvíjet.',
+    docs_caption1: 'Input field - příklad z dokumentace',
+    docs_caption2: 'Input field - příklad z dokumentace / varianty',
+    docs_principles_title: 'Struktura dokumentace',
+    docs_principle1_title: 'Účel a použití',
+    docs_principle1_text: 'Kdy komponentu použít a kdy nikoliv.',
+    docs_principle2_title: 'Anatomie a chování',
+    docs_principle2_text: 'Struktura komponenty, interakce, stavy a uživatelská zpětná vazba.',
+    docs_principle3_title: 'Design tokeny',
+    docs_principle3_text: 'Reference na rozestupy, typografii, barvy a další systémové hodnoty.',
+    docs_principle4_title: 'Implementační poznámky',
+    docs_principle4_text: 'Doporučení pro vývojáře včetně okrajových scénářů a technických omezení.',
+    ux_title: 'UX návrh nových aplikací',
+    ux_intro: 'Vedle práce na design systému jsem se podílel také na návrhu nových aplikací, které využívaly sdílenou knihovnu komponent. Pracoval jsem na různých modulech, například: Mzdy, Dokumenty a potvrzení, Fakturace, Komunikace nebo Odměňování. Vzhledem k aktuálním prioritám se rozsah a náplň mé práce průběžně měnil, nejčastěji jsem se ale zaměřoval na datově bohatá rozhraní a komplexní workflow scénáře. Níže uvedené příklady představují vybrané obrazovky, které jsem navrhl pro několik těchto modulů.',
+    erp_name: 'ERP Dashboard',
+    erp_desc: 'Přehledový dashboard pro management — KPIs, tržby, výstrahy v reálném čase.',
+    invoice_name: 'Fakturace',
+    invoice_desc: 'Nový UX flow pro tvorbu a správu faktur — snížení kognitivní zátěže o 60 %.',
+    hr_name: 'Komunikace',
+    hr_desc: 'Zaměstnanecký portál — docházka, dovolené, benefity, dokumenty na jednom místě.',
+    notif_name: 'Docházka',
+    notif_desc: 'Centralizovaný systém notifikací napříč všemi Seyfor produkty.',
+    admin_name: 'Admin console',
+    admin_desc: 'Správa uživatelů, rolí a oprávnění — komplexní ale přehledné rozhraní pro adminy.',
+    warehouse_name: 'Skladový modul',
+    warehouse_desc: 'Správa skladu, pohyby zboží, přehledy a reporty pro skladníky i manažery.',
+    overview_tab: 'Přehled',
+    detail_tab: 'Detail view',
+    mobile_tab: 'Mobil',
+    edge_cases_tab: 'Edge cases',
+    prototype_tab: 'Prototype flow',
+    erp_screen1: 'Personalizovaný dashboard s vašimi nejdůležitějšími aktualizacemi',
+    erp_screen2: 'Detail objednávky: timeline, položky, komunikace se zákazníkem',
+    erp_screen3: 'Responzivní layout na 375px — mobile-first přístup',
+    erp_screen4: 'Edge cases: prázdný stav, error state, loading skeletons',
+    erp_screen5: 'Prototype flow: celá user journey v interaktivní podobě',
+    ux_approach_text: '<strong>Přístup:</strong> U každého modulu jsem začínal analýzou, tedy identifikací problémů a definováním požadavků ve spolupráci s analytiky. Na základě získaných poznatků jsem vytvářel wireframy a následně high-fidelity prototypy. Návrhy jsem průběžně konzultoval s analytiky, vývojáři i product ownery v několika kolech revizí. Po schválení jsem finální řešení předal programátorům a dále asistoval u jeho integrace do produktu.',
+    footer_copy: '© <strong>Ota Škvor</strong>. All rights reserved.',
+    footer_back: 'Zpět na portfolio'
+  }
+};
+
+function applySeyforLang(lang) {
+  const t = seyforTranslations[lang] || seyforTranslations.en;
+
+  // Update page title
+  if (t.page_title) document.title = t.page_title;
+
+  // Back link
+  const backLink = document.querySelector('.back-link');
+  if (backLink && t.back_link) backLink.textContent = t.back_link;
+
+  // TOC links
+  const tocLinks = [
+    { href: '#overview', key: 'toc_overview' },
+    { href: '#role', key: 'toc_role' },
+    { href: '#design-system', key: 'toc_design_system' },
+    { href: '#component-library', key: 'toc_component_library' },
+    { href: '#tokens', key: 'toc_tokens' },
+    { href: '#code', key: 'toc_code' },
+    { href: '#documentation', key: 'toc_documentation' },
+    { href: '#ux-apps', key: 'toc_ux_apps' }
+  ];
+  document.querySelectorAll('.case-toc a').forEach(a => {
+    const link = tocLinks.find(l => l.href === a.getAttribute('href'));
+    if (link && t[link.key]) a.textContent = t[link.key];
+  });
+
+  // Summarize drawer
+  const summarizeTitle = document.querySelector('.summarize-popup strong');
+  if (summarizeTitle && t.summarize_title) summarizeTitle.textContent = t.summarize_title;
+  const summarizeText = document.querySelector('.summarize-popup p');
+  if (summarizeText && t.summarize_text) summarizeText.textContent = t.summarize_text;
+
+  // Hero section
+  const caseHero = document.querySelector('.case-hero');
+  if (caseHero) {
+    const h1 = caseHero.querySelector('h1');
+    if (h1 && t.hero_title) h1.innerHTML = t.hero_title + ' <span style="font-style:italic;color:var(--fg-muted);">' + (t.hero_epoch || '') + '</span>';
+    const sub = caseHero.querySelector('.case-hero-sub');
+    if (sub && t.hero_sub) sub.textContent = t.hero_sub;
+    const stats = caseHero.querySelectorAll('.stat');
+    const statData = [
+      { num: t.stat1_num, label: t.stat1_label },
+      { num: t.stat2_num, label: t.stat2_label },
+      { num: t.stat3_num, label: t.stat3_label },
+      { num: t.stat4_num, label: t.stat4_label }
+    ];
+    stats.forEach((stat, i) => {
+      if (statData[i]) {
+        const num = stat.querySelector('.stat-num');
+        const label = stat.querySelector('.stat-label');
+        if (num && statData[i].num) num.textContent = statData[i].num;
+        if (label && statData[i].label) label.textContent = statData[i].label;
+      }
+    });
+  }
+
+  // Role section
+  const roleSection = document.getElementById('role');
+  if (roleSection) {
+    const h2 = roleSection.querySelector('h2');
+    if (h2 && t.role_title) h2.textContent = t.role_title;
+    const intro = roleSection.querySelector(':scope > p:first-of-type');
+    if (intro && t.role_intro) intro.textContent = t.role_intro;
+
+    const roleCards = roleSection.querySelectorAll('.role-card');
+    const roleData = [
+      { title: t.role_work_title, desc: t.role_work_desc },
+      { title: t.role_resp_title, desc: t.role_resp_desc },
+      { title: t.role_collab_title, desc: t.role_collab_desc }
+    ];
+    roleCards.forEach((card, i) => {
+      if (roleData[i]) {
+        const title = card.querySelector('h4');
+        const desc = card.querySelector('p');
+        if (title && roleData[i].title) title.textContent = roleData[i].title;
+        if (desc && roleData[i].desc) desc.textContent = roleData[i].desc;
+      }
+    });
+
+    const h3s = roleSection.querySelectorAll('h3');
+    if (h3s[0] && t.context_title) h3s[0].textContent = t.context_title;
+
+    const ps = roleSection.querySelectorAll(':scope > p');
+    ps.forEach((p, i) => {
+      if (i === 1 && t.context_text1) p.textContent = t.context_text1;
+      if (i === 3 && t.context_text2) p.textContent = t.context_text2;
+    });
+
+    const csGrid = roleSection.querySelector('.cs-grid');
+    if (csGrid) {
+      const csBlocks = csGrid.querySelectorAll('.cs-block');
+      if (csBlocks[0]) {
+        const bh4 = csBlocks[0].querySelector('h4');
+        const bp = csBlocks[0].querySelector('p');
+        if (bh4 && t.before_title) bh4.textContent = t.before_title;
+        if (bp && t.before_desc) bp.textContent = t.before_desc;
+      }
+      if (csBlocks[1]) {
+        const bh4 = csBlocks[1].querySelector('h4');
+        const bp = csBlocks[1].querySelector('p');
+        if (bh4 && t.after_title) bh4.textContent = t.after_title;
+        if (bp && t.after_desc) bp.textContent = t.after_desc;
+      }
+    }
+  }
+
+  // Design System section
+  const dsSection = document.getElementById('design-system');
+  if (dsSection) {
+    const h2 = dsSection.querySelector('h2');
+    if (h2 && t.ds_title) h2.textContent = t.ds_title;
+    const intro = dsSection.querySelector('.ds-section-intro');
+    if (intro && t.ds_intro) intro.textContent = t.ds_intro;
+    const sub = dsSection.querySelector('.ds-section-sub');
+    if (sub && t.ds_sub) sub.textContent = t.ds_sub;
+    const phLabel = dsSection.querySelector('.ds-ph-label');
+    if (phLabel && t.ds_flowchart_label) phLabel.textContent = t.ds_flowchart_label;
+
+    const dsNumItems = dsSection.querySelectorAll('.ds-mini-item');
+    const dsData = [
+      { num: t.ds_components, label: t.ds_components_label },
+      { num: t.ds_patterns, label: t.ds_patterns_label },
+      { num: t.ds_templates, label: t.ds_templates_label },
+      { num: t.ds_tokens, label: t.ds_tokens_label }
+    ];
+    dsNumItems.forEach((item, i) => {
+      if (dsData[i]) {
+        const val = item.querySelector('.ds-mini-val');
+        const lbl = item.querySelector('.ds-mini-lbl');
+        if (val && dsData[i].num) val.textContent = dsData[i].num;
+        if (lbl && dsData[i].label) lbl.textContent = dsData[i].label;
+      }
+    });
+  }
+
+  // Component Library section
+  const clSection = document.getElementById('component-library');
+  if (clSection) {
+    const h2 = clSection.querySelector('h2');
+    if (h2 && t.cl_title) h2.textContent = t.cl_title;
+    const intro = clSection.querySelector('.ds-section-intro');
+    if (intro && t.cl_intro) intro.textContent = t.cl_intro;
+
+    // h3 headings
+    const h3s = clSection.querySelectorAll('.cl-h3');
+    if (h3s[0] && t.cl_process_title) h3s[0].textContent = t.cl_process_title;
+    if (h3s[1] && t.cl_figma_title) h3s[1].textContent = t.cl_figma_title;
+    if (h3s[2] && t.cl_pt_title) h3s[2].innerHTML = t.cl_pt_title;
+
+    // paragraphs by data-i18n
+    clSection.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key] !== undefined) el.innerHTML = t[key];
+    });
+
+    const compHeader = clSection.querySelector('.comp-showcase-header span:last-child');
+    if (compHeader && t.components_showcase_header) compHeader.textContent = t.components_showcase_header;
+
+    const impact = clSection.querySelector('.impact-note');
+    if (impact) {
+      const lbl = impact.querySelector('[data-i18n="cl_result_label"]');
+      const txt = impact.querySelector('[data-i18n="cl_result_text"]');
+      if (lbl && t.cl_result_label) lbl.textContent = t.cl_result_label;
+      if (txt && t.cl_result_text) txt.textContent = t.cl_result_text;
+    }
+  }
+
+  // Tokens section
+  const tokensSection = document.getElementById('tokens');
+  if (tokensSection) {
+    const h2 = tokensSection.querySelector('h2');
+    if (h2 && t.tokens_title) h2.textContent = t.tokens_title;
+    const intro = tokensSection.querySelector(':scope > p:first-of-type');
+    if (intro && t.tokens_intro) intro.innerHTML = t.tokens_intro;
+
+    // Token architecture and outputs (two-column grid)
+    const csBlocks = tokensSection.querySelectorAll('.cs-grid .cs-block');
+    if (csBlocks[0]) {
+      const h4 = csBlocks[0].querySelector('h4');
+      if (h4 && t.token_arch_title) h4.textContent = t.token_arch_title;
+      const lis = csBlocks[0].querySelectorAll('ul li');
+      if (lis[0] && t.token_arch_global) lis[0].innerHTML = t.token_arch_global;
+      if (lis[1] && t.token_arch_semantic) lis[1].innerHTML = t.token_arch_semantic;
+      if (lis[2] && t.token_arch_component) lis[2].innerHTML = t.token_arch_component;
+    }
+    if (csBlocks[1]) {
+      const h4 = csBlocks[1].querySelector('h4');
+      if (h4 && t.token_output_title) h4.textContent = t.token_output_title;
+      const lis = csBlocks[1].querySelectorAll('ul li');
+      if (lis[0] && t.token_output_css) lis[0].textContent = t.token_output_css;
+      if (lis[1] && t.token_output_json) lis[1].textContent = t.token_output_json;
+      if (lis[2] && t.token_output_figma) lis[2].textContent = t.token_output_figma;
+      if (lis[3] && t.token_output_support) lis[3].textContent = t.token_output_support;
+    }
+
+    // Theming header and paragraph
+    const themingH3 = tokensSection.querySelector('h3');
+    if (themingH3 && t.theming_title) themingH3.textContent = t.theming_title;
+    const themingP = themingH3 ? themingH3.nextElementSibling : null;
+    if (themingP && t.theming_text) themingP.textContent = t.theming_text;
+
+    const impact = tokensSection.querySelector('.impact-note');
+    if (impact && t.key_shift_text) impact.innerHTML = t.key_shift_text;
+  }
+
+  // Code section
+  const codeSection = document.getElementById('code');
+  if (codeSection) {
+    const h2 = codeSection.querySelector('h2');
+    if (h2 && t.code_title) h2.textContent = t.code_title;
+    const intro = codeSection.querySelector(':scope > p:first-of-type');
+    if (intro && t.code_intro) intro.textContent = t.code_intro;
+
+    const h3s = codeSection.querySelectorAll('h3');
+    if (h3s[0] && t.code_sample_title) h3s[0].textContent = t.code_sample_title;
+    if (h3s[1] && t.code_collab_title) h3s[1].textContent = t.code_collab_title;
+
+    const ps = codeSection.querySelectorAll(':scope > p');
+    ps.forEach((p, i) => {
+      if (i === 1 && t.code_sample_text) p.textContent = t.code_sample_text;
+    });
+
+    const csBlocks = codeSection.querySelectorAll('.cs-grid .cs-block');
+    const codeData = [
+      { title: t.code_handoff_title, desc: t.code_handoff_desc },
+      { title: t.code_feedback_title, desc: t.code_feedback_desc },
+      { title: t.code_version_title, desc: t.code_version_desc },
+      { title: t.code_pipeline_title, desc: t.code_pipeline_desc }
+    ];
+    csBlocks.forEach((block, i) => {
+      if (codeData[i]) {
+        const bh4 = block.querySelector('h4');
+        const bp = block.querySelector('p');
+        if (bh4 && codeData[i].title) bh4.textContent = codeData[i].title;
+        if (bp && codeData[i].desc) bp.textContent = codeData[i].desc;
+      }
+    });
+  }
+
+  // Documentation section
+  const docsSection = document.getElementById('documentation');
+  if (docsSection) {
+    const h2 = docsSection.querySelector('h2');
+    if (h2 && t.docs_title) h2.textContent = t.docs_title;
+    const intro = docsSection.querySelector('p[data-i18n-html="docs_intro"],p[data-i18n="docs_intro"],:scope > p:first-of-type');
+    if (intro && t.docs_intro) intro.innerHTML = t.docs_intro;
+
+    const cap1 = docsSection.querySelector('[data-i18n="docs_caption1"]');
+    const cap2 = docsSection.querySelector('[data-i18n="docs_caption2"]');
+    if (cap1 && t.docs_caption1) cap1.textContent = t.docs_caption1;
+    if (cap2 && t.docs_caption2) cap2.textContent = t.docs_caption2;
+
+    const h3 = docsSection.querySelector('h3');
+    if (h3 && t.docs_principles_title) h3.textContent = t.docs_principles_title;
+
+    const cards = docsSection.querySelectorAll('.doc-principle-card');
+    const principles = [
+      { title: t.docs_principle1_title, text: t.docs_principle1_text },
+      { title: t.docs_principle2_title, text: t.docs_principle2_text },
+      { title: t.docs_principle3_title, text: t.docs_principle3_text },
+      { title: t.docs_principle4_title, text: t.docs_principle4_text },
+    ];
+    cards.forEach((card, i) => {
+      if (principles[i]) {
+        const titleEl = card.querySelector('.doc-principle-title');
+        const textEl  = card.querySelector('.doc-principle-text');
+        if (titleEl && principles[i].title) titleEl.textContent = principles[i].title;
+        if (textEl  && principles[i].text)  textEl.textContent  = principles[i].text;
+      }
+    });
+  }
+
+  // UX section
+  const uxSection = document.getElementById('ux-apps');
+  if (uxSection) {
+    const h2 = uxSection.querySelector('h2');
+    if (h2 && t.ux_title) h2.textContent = t.ux_title;
+    const intro = uxSection.querySelector(':scope > p:first-of-type');
+    if (intro && t.ux_intro) intro.textContent = t.ux_intro;
+
+    // Pill labels via data-i18n spans
+    const pillSpans = uxSection.querySelectorAll('.uxm-pill span[data-i18n]');
+    pillSpans.forEach(span => {
+      const key = span.getAttribute('data-i18n');
+      if (t[key]) span.textContent = t[key];
+    });
+
+    const impact = uxSection.querySelector('.impact-note');
+    if (impact && t.ux_approach_text) impact.innerHTML = t.ux_approach_text;
+  }
+
+  // Footer
+  const footer = document.querySelector('.site-footer');
+  if (footer) {
+    const footerCopy = footer.querySelector('.footer-copy');
+    const footerBack = footer.querySelector('.back-to-portfolio');
+    if (footerCopy && t.footer_copy) footerCopy.innerHTML = t.footer_copy;
+    if (footerBack && t.footer_back) footerBack.textContent = t.footer_back;
+  }
+}
+
+// Load and apply language on page load
+document.addEventListener('DOMContentLoaded', () => {
+  const lang = localStorage.getItem('portfolio_lang') || 'en';
+  applySeyforLang(lang);
+
+  // React immediately when the language switcher in this page's footer is used
+  document.querySelectorAll('.lang-option').forEach(btn => {
+    btn.addEventListener('click', () => applySeyforLang(btn.dataset.lang));
+  });
+
+  // Listen for language changes from main page
+  const observer = new MutationObserver(() => {
+    const newLang = localStorage.getItem('portfolio_lang') || 'en';
+    applySeyforLang(newLang);
+  });
+
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['lang']
+  });
+});
+
+// Also watch for storage changes (when language changes from another tab/window)
+window.addEventListener('storage', (e) => {
+  if (e.key === 'portfolio_lang') {
+    applySeyforLang(e.newValue || 'en');
+  }
+});
+
+/* ── Code run modal ─────────────────────────────────────── */
+(function() {
+  const runBtn   = document.getElementById('codeRunBtn');
+  const modal    = document.getElementById('codeRunModal');
+  const closeBtn = document.getElementById('codeRunClose');
+
+  function openModal() {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  if (runBtn)   runBtn.addEventListener('click', openModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (modal)    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+  document.addEventListener('keydown', (e) => {
+    if (modal && modal.classList.contains('open') && e.key === 'Escape') closeModal();
+  });
+})();
+
+/* ── Code tabs ──────────────────────────────────────────── */
+document.querySelectorAll('.code-tabs').forEach(tabs => {
+  tabs.addEventListener('click', e => {
+    const tab = e.target.closest('.code-tab');
+    if (!tab) return;
+    const key = tab.dataset.tab;
+    const block = tabs.closest('.code-block');
+    block.querySelectorAll('.code-tab').forEach(t => t.classList.toggle('active', t === tab));
+    block.querySelectorAll('.code-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + key));
+  });
+});
+
+/* ── Theme switcher ─────────────────────────────────────── */
+document.getElementById('themeTabs').addEventListener('click', e => {
+  const tab = e.target.closest('.theme-tab');
+  if (!tab) return;
+  const theme = tab.dataset.theme;
+  document.querySelectorAll('.theme-tab').forEach(t => t.classList.toggle('active', t === tab));
+  document.querySelectorAll('.theme-panel').forEach(p => p.classList.toggle('active', p.dataset.theme === theme));
+});
+
+// Initialize per-panel preview images from the `data-img` attribute.
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.theme-panel').forEach(p => {
+    const img = p.querySelector('.theme-preview-img');
+    const src = p.dataset.img;
+    if (img && src) img.src = src;
+  });
+});
+
+/* ── UX module pill switcher + carousel ─────────────────── */
+(function() {
+  const moduleData = [
+    {
+      icon: '📊', name_cs: 'ERP Dashboard', name_en: 'ERP Dashboard',
+      desc_cs: 'Přehledový dashboard pro management — KPIs, tržby, výstrahy v reálném čase.',
+      desc_en: 'Management overview dashboard — KPIs, revenue, real-time alerts.',
+      slides: [
+        { cs: 'Personalizovaný dashboard s vašimi nejdůležitějšími aktualizacemi', en: 'Personalized dashboard with your most important updates' },
+        { cs: 'Detail objednávky: timeline, položky, komunikace se zákazníkem', en: 'Order detail: timeline, items, customer communication' }
+      ]
+    },
+    {
+      icon: '🧾', name_cs: 'Fakturace', name_en: 'Invoicing',
+      desc_cs: 'Nový UX flow pro tvorbu a správu faktur — snížení kognitivní zátěže o 60 %.',
+      desc_en: 'New UX flow for invoice creation and management — 60% reduction in cognitive load.',
+      slides: [
+        { cs: 'Hlavní přehled faktur: stavy, filtry, rychlé akce', en: 'Invoice approval: workflow, details, status' },
+        { cs: 'Wizard pro novou fakturu: krok 1/3 — odběratel a datum', en: 'New invoice wizard: step 1/3 — recipient and date' }
+      ]
+    },
+    {
+      icon: '👥', name_cs: 'Komunikace', name_en: 'Communication',
+      desc_cs: 'Zaměstnanecký portál — docházka, dovolené, benefity, dokumenty na jednom místě.',
+      desc_en: 'Employee portal — attendance, time off, benefits, documents in one place.',
+      slides: [
+        { cs: 'Přehled zaměstnance: dovolená, docházka, benefity', en: 'Overview of published news, articles and updates' },
+        { cs: 'Žádost o dovolenou: kalendář a flow schválení', en: 'Group configuration – define who receives specific company articles and announcements' }
+      ]
+    },
+    {
+      icon: '🔔', name_cs: 'Docházka', name_en: 'Attendance',
+      desc_cs: 'Centralizovaný systém notifikací napříč všemi Seyfor produkty.',
+      desc_en: 'Centralized notification system across all Seyfor products.',
+      slides: [
+        { cs: 'Přehled všech notifikací: filtrování per-produkt', en: 'Monthly attendance overview with daily balances, absences, and working time details.' },
+        { cs: 'Nastavení preferencí: typy notifikací a kanály', en: 'Preferences: notification types and channels' }
+      ]
+    },
+    {
+      icon: '⚙️', name_cs: 'Admin console', name_en: 'Admin console',
+      desc_cs: 'Správa uživatelů, rolí a oprávnění — komplexní ale přehledné rozhraní pro adminy.',
+      desc_en: 'User, role and permission management — complex but clear interface for admins.',
+      slides: [
+        { cs: 'Správa uživatelů: přehled, role, stavy', en: 'User management: overview, roles, statuses' },
+        { cs: 'Role editor: matice oprávnění per-produkt', en: 'Role editor: permission matrix per product' }
+      ]
+    },
+    {
+      icon: '📦', name_cs: 'Skladový modul', name_en: 'Warehouse module',
+      desc_cs: 'Správa skladu, pohyby zboží, přehledy a reporty pro skladníky i manažery.',
+      desc_en: 'Inventory management, goods movement, overviews and reports for warehouse staff and managers.',
+      slides: [
+        { cs: 'Přehled skladu: položky, stavy, minimum alert', en: 'Warehouse overview: items, statuses, minimum alerts' },
+        { cs: 'Příjem zboží: scan → potvrzení → zápis', en: 'Goods receipt: scan → confirm → record' }
+      ]
+    }
+  ];
+
+  let activeMod = 0;
+  let activeSlide = 0;
+
+  const pills    = document.querySelectorAll('.uxm-pill');
+  const track    = document.getElementById('uxmTrack');
+  const dotsEl   = document.getElementById('uxmDots');
+  const prevBtn  = document.getElementById('uxmPrev');
+  const nextBtn  = document.getElementById('uxmNext');
+  const footerEl = document.querySelector('.uxm-carousel-footer');
+  const capMod   = document.getElementById('uxmCaptionModule');
+  const capTxt   = document.getElementById('uxmCaptionText');
+  const counterEl= document.getElementById('uxmCounter');
+
+  if (!track || !dotsEl) return;
+
+  const allSlides = Array.from(track.querySelectorAll('.uxm-slide'));
+
+  function getLang() {
+    return localStorage.getItem('portfolio_lang') || 'en';
+  }
+
+  function buildDots(count) {
+    dotsEl.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const d = document.createElement('button');
+      d.className = 'uxm-dot' + (i === 0 ? ' active' : '');
+      d.setAttribute('aria-label', 'Snímek ' + (i+1));
+      d.addEventListener('click', () => goToSlide(i));
+      dotsEl.appendChild(d);
+    }
+  }
+
+  function updateDots(idx) {
+    dotsEl.querySelectorAll('.uxm-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === idx);
+    });
+  }
+
+  function getModSlides(mod) {
+    return allSlides.filter(s => +s.dataset.mod === mod);
+  }
+
+  function goToSlide(idx) {
+    const modSlides = getModSlides(activeMod);
+    if (!modSlides.length) return;
+    activeSlide = (idx + modSlides.length) % modSlides.length;
+    const globalIdx = allSlides.indexOf(modSlides[activeSlide]);
+    track.style.transform = `translateX(-${globalIdx * 100}%)`;
+    updateDots(activeSlide);
+    updateCaption();
+  }
+
+  function updateCaption() {
+    const lang = getLang();
+    const mod = moduleData[activeMod];
+    const slide = mod.slides[activeSlide] || mod.slides[0];
+    if (capMod)  capMod.textContent  = lang === 'cs' ? mod.name_cs : mod.name_en;
+    if (capTxt)  capTxt.textContent  = lang === 'cs' ? slide.cs : slide.en;
+    if (counterEl) counterEl.textContent = (activeSlide + 1) + ' / ' + getModSlides(activeMod).length;
+  }
+
+  function updateNavVisibility(count) {
+    const hidden = count <= 1;
+    if (prevBtn) prevBtn.style.display = hidden ? 'none' : '';
+    if (nextBtn) nextBtn.style.display = hidden ? 'none' : '';
+    if (footerEl) footerEl.style.display = hidden ? 'none' : '';
+  }
+
+  function switchModule(idx) {
+    activeMod = idx;
+    activeSlide = 0;
+    const lang = getLang();
+    const mod = moduleData[idx];
+
+    // Update pills
+    pills.forEach((p, i) => p.classList.toggle('active', i === idx));
+
+    // Jump carousel
+    const modSlides = getModSlides(idx);
+    const globalIdx = allSlides.indexOf(modSlides[0]);
+    track.style.transition = 'none';
+    track.style.transform  = `translateX(-${globalIdx * 100}%)`;
+    setTimeout(() => { track.style.transition = ''; }, 20);
+
+    buildDots(modSlides.length);
+    updateNavVisibility(modSlides.length);
+    updateCaption();
+  }
+
+  // Init
+  pills.forEach((p, i) => p.addEventListener('click', () => switchModule(i)));
+  if (prevBtn) prevBtn.addEventListener('click', () => goToSlide(activeSlide - 1));
+  if (nextBtn) nextBtn.addEventListener('click', () => goToSlide(activeSlide + 1));
+
+  switchModule(0);
+
+  // Re-apply on lang change
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'portfolio_lang') {
+      updateCaption();
+      // also update pill text (handled by applySeyforLang via data-i18n span)
+    }
+  });
+
+  /* ── Lightbox / fullscreen slide preview ── */
+  const lightbox   = document.getElementById('uxmLightbox');
+  const lbInner    = document.getElementById('uxmLbInner');
+  const lbTitle    = document.getElementById('uxmLbTitle');
+  const lbBadge    = document.getElementById('uxmLbBadge');
+  const lbCounter  = document.getElementById('uxmLbCounter');
+  const lbClose    = document.getElementById('uxmLbClose');
+  const lbPrev     = document.getElementById('uxmLbPrev');
+  const lbNext     = document.getElementById('uxmLbNext');
+
+  let lbSlideIndex = 0; // index within current module slides
+
+  function openLightbox(slideIdx) {
+    lbSlideIndex = slideIdx;
+    renderLightbox();
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+    lbInner.innerHTML = '';
+  }
+
+  function renderLightbox() {
+    const lang = getLang();
+    const mod = moduleData[activeMod];
+    const modSlides = getModSlides(activeMod);
+    const total = modSlides.length;
+    lbSlideIndex = (lbSlideIndex + total) % total;
+
+    // Clone the slide content into the lightbox
+    const slide = modSlides[lbSlideIndex];
+    const clone = slide.cloneNode(true);
+    clone.classList.remove('uxm-slide');
+    clone.classList.add('uxm-lightbox-slide');
+    clone.style.cssText = 'width:100%;max-width:100%;height:auto;min-height:0;overflow:visible;';
+    clone.querySelectorAll('img').forEach((img) => {
+      img.style.objectFit = 'contain';
+      img.style.maxWidth = '100%';
+      img.style.maxHeight = 'calc(90vh - 190px)';
+      img.style.width = 'auto';
+      img.style.height = 'auto';
+      img.style.display = 'block';
+    });
+    lbInner.innerHTML = '';
+    lbInner.appendChild(clone);
+
+    // Update header info
+    if (lbBadge) lbBadge.textContent = lang === 'cs' ? mod.name_cs : mod.name_en;
+    const slideData = mod.slides[lbSlideIndex] || mod.slides[0];
+    if (lbTitle) lbTitle.textContent = lang === 'cs' ? slideData.cs : slideData.en;
+    if (lbCounter) lbCounter.textContent = (lbSlideIndex + 1) + ' / ' + total;
+
+    // Show/hide nav
+    const showNav = total > 1;
+    if (lbPrev) lbPrev.style.display = showNav ? '' : 'none';
+    if (lbNext) lbNext.style.display = showNav ? '' : 'none';
+  }
+
+  // Click on slide to open lightbox
+  allSlides.forEach((slide, globalIdx) => {
+    slide.addEventListener('click', () => {
+      const modSlides = getModSlides(activeMod);
+      const slideIdx  = modSlides.indexOf(slide);
+      if (slideIdx === -1) return; // slide not in current module
+      openLightbox(slideIdx);
+    });
+  });
+
+  if (lbClose)  lbClose.addEventListener('click', closeLightbox);
+  if (lbPrev)   lbPrev.addEventListener('click', () => { lbSlideIndex--; renderLightbox(); });
+  if (lbNext)   lbNext.addEventListener('click', () => { lbSlideIndex++; renderLightbox(); });
+
+  // Close on backdrop click
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+
+  // Keyboard nav
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape')      closeLightbox();
+    if (e.key === 'ArrowLeft')  { lbSlideIndex--; renderLightbox(); }
+    if (e.key === 'ArrowRight') { lbSlideIndex++; renderLightbox(); }
+  });
+})();
+</script>
+</html>

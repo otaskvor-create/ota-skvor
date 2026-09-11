@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-en="Proconom — Ota Škvor" data-cs="Proconom — Ota Škvor">Proconom — Ota Škvor</title>
+  <meta name="description" data-en="Three years at a Brno digital agency designing UI/UX for enterprise clients — B2B portals, municipal websites, internal tools and the agency's first component library." data-cs="Tři roky v brněnské digitální agentuře, návrh UI/UX pro enterprise klienty — B2B portály, municipální weby, interní nástroje a první komponentní knihovna agentury." content="Three years at a Brno digital agency designing UI/UX for enterprise clients — B2B portals, municipal websites, internal tools and the agency's first component library." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    /* What I did at the company — intro grid */
+    .role-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1.5rem 0 2.5rem;
+    }
+    .role-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.2rem;
+    }
+    .role-block-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--fg-light);
+      margin-bottom: 0.6rem;
+    }
+    .role-block p {
+      font-size: 0.83rem;
+      color: var(--fg-muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .role-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="case-body-page">
+
+<nav class="case-nav">
+  <div class="case-nav-inner">
+    <a href="../index.html" class="back-link" data-en="Back" data-cs="Zpět">Back</a>
+    <ul class="case-toc">
+      <li><a href="#overview" data-en="Overview" data-cs="Přehled">Overview</a></li>
+      <li><a href="#role" data-en="Role" data-cs="Role">Role</a></li>
+      <li><a href="#projects" data-en="Projects" data-cs="Projekty">Projects</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="summarize-drawer">
+  <div class="summarize-popup" id="summarizePopup">
+    <button class="summarize-close" id="summarizeClose">×</button>
+    <strong style="color:var(--fg);display:block;margin-bottom:0.5rem;">Proconom — tldr</strong>
+    <p data-en="Three years at a digital agency. I designed UI/UX for client projects — B2B portals, municipal websites, internal tools. I introduced a component-based design approach across the agency and delivered 5 larger projects." data-cs="Tři roky v digitální agentuře. Navrhoval jsem UI/UX pro klientské projekty — B2B portály, municipální weby, interní nástroje. Zavedl jsem komponentový přístup k designu v celé agentuře a doručil 5 větších projektů.">Three years at a digital agency. I designed UI/UX for client projects — B2B portals, municipal websites, internal tools. I introduced a component-based design approach across the agency and delivered 5 larger projects.</p>
+  </div>
+  <button class="summarize-btn" id="summarizeBtn" data-en="Summarize" data-cs="Shrnout">Summarize</button>
+</div>
+
+<main class="case-page">
+
+  <!-- HERO -->
+  <div class="case-hero" id="overview">
+    <div class="case-tags">
+      <span class="case-tag">Agency</span>
+      <span class="case-tag">UI/UX Design</span>
+      <span class="case-tag">4 projects</span>
+      <span class="case-tag">2017 — 2020</span>
+    </div>
+    <h1>Proconom <span style="font-style:italic;color:var(--fg-muted);">2017 — 2020</span></h1>
+    <p class="case-hero-sub" data-en="Three years at a Brno digital agency focused on enterprise clients — municipal, manufacturing and B2B. I worked as a UX/UI designer on client projects and gradually took on a design lead role for larger engagements." data-cs="Tři roky v brněnské digitální agentuře zaměřené na enterprise klienty — samosprávy, výrobní firmy, B2B společnosti. Pracoval jsem jako UX/UI designér na klientských projektech a postupně přebíral roli designového lead pro větší zakázky.">Three years at a Brno digital agency focused on enterprise clients — municipal, manufacturing and B2B. I worked as a UX/UI designer on client projects and gradually took on a design lead role for larger engagements.</p>
+
+    <div class="case-stats">
+      <div class="stat"><div class="stat-num">5+</div><div class="stat-label" data-en="delivered projects" data-cs="doručených projektů">delivered projects</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label" data-en="years in the agency" data-cs="roky v agentuře">years in the agency</div></div>
+      <div class="stat"><div class="stat-num">✦</div><div class="stat-label" data-en="first agency design system" data-cs="první design systém agentury">first agency design system</div></div>
+      <div class="stat"><div class="stat-num">B2B</div><div class="stat-label" data-en="enterprise focus" data-cs="enterprise fokus">enterprise focus</div></div>
+    </div>
+  </div>
+
+  <!-- ROLE -->
+  <div class="case-section" id="role">
+    <h2 data-en="What I did at Proconom" data-cs="Co jsem v Proconomu dělal">What I did at Proconom</h2>
+    <p data-en="I started as a junior designer — wireframes, visual assets, client coordination. Over time I took on bigger responsibilities: leading the design phase on larger projects, introducing research practices, and building internal design workflows the agency did not have before." data-cs="Začínal jsem jako junior designér — wireframy, grafické podklady, koordinace s klienty. Postupně jsem přebíral větší odpovědnost: vedl jsem design fáze větších projektů, zaváděl výzkumné metody a budoval interní designové procesy, které agentura předtím neměla.">I started as a junior designer — wireframes, visual assets, client coordination. Over time I took on bigger responsibilities: leading the design phase on larger projects, introducing research practices, and building internal design workflows the agency did not have before.</p>
+
+    <div class="role-grid">
+      <div class="role-block">
+        <div class="role-block-title" data-en="UX Design &amp; Research" data-cs="UX Design a Research" data-i18n-html>UX Design &amp; Research</div>
+        <p data-en="User journeys, wireframes, user interviews, basic usability testing. I introduced the first UX review process — every launch was reviewed structurally." data-cs="User journeys, wireframy, uživatelské rozhovory, základní usability testování. Zavedl jsem první UX review proces — před každým launchem proběhlo strukturované hodnocení.">User journeys, wireframes, user interviews, basic usability testing. I introduced the first UX review process — every launch was reviewed structurally.</p>
+      </div>
+      <div class="role-block">
+        <div class="role-block-title">UI Design</div>
+        <p data-en="High-fidelity prototypes and final visual assets for developers. A consistent visual style across projects for the same client. I led the agency transition from Photoshop → Sketch → Figma." data-cs="Hi-fi prototypy a finální grafické podklady pro vývojáře. Jednotný vizuální styl napříč projekty stejného klienta. Přechod z Photoshop → Sketch → Figma jsem v agentuře inicioval já.">High-fidelity prototypes and final visual assets for developers. A consistent visual style across projects for the same client. I led the agency transition from Photoshop → Sketch → Figma.</p>
+      </div>
+      <div class="role-block">
+        <div class="role-block-title" data-en="Component Library" data-cs="Komponentní knihovna">Component Library</div>
+        <p data-en="I built the agency's first shared component library. The result was a 30% shorter UI phase for new projects thanks to reusable patterns." data-cs="Postavil jsem první sdílenou komponentní knihovnu agentury. Výsledkem bylo 30 % kratší doby UI fáze u nových projektů díky znovupoužitelným vzorům.">I built the agency's first shared component library. The result was a 30% shorter UI phase for new projects thanks to reusable patterns.</p>
+      </div>
+      <div class="role-block">
+        <div class="role-block-title" data-en="Client collaboration" data-cs="Klientská spolupráce">Client collaboration</div>
+        <p data-en="Direct client contact — requirements workshops, design presentations, iteration on feedback. I learned to quickly distinguish what clients said from what they really needed." data-cs="Přímá komunikace s klienty — requirements workshops, prezentace návrhů, iterace na základě zpětné vazby. Naučil jsem se rychle rozlišovat mezi tím, co klient říká, a co skutečně potřebuje.">Direct client contact — requirements workshops, design presentations, iteration on feedback. I learned to quickly distinguish what clients said from what they really needed.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT OVERVIEW -->
+  <div class="case-section" id="projects">
+    <h2 data-en="Projects" data-cs="Projekty">Projects</h2>
+    <p data-en="Four representative projects from three years in the agency — corporate websites, internal tools, and product platforms built for enterprise clients." data-cs="Čtyři reprezentativní projekty z tříletého působení v agentuře — firemní weby, interní nástroje a produktové platformy pro enterprise klienty.">Four representative projects from three years in the agency — corporate websites, internal tools, and product platforms built for enterprise clients.</p>
+  </div>
+
+  <div class="proj-grid">
+
+    <a href="case/roomly.html" class="proj-card reveal">
+      <div class="proj-card-img-placeholder"><span data-en="Room booking calendar & member dashboard" data-cs="Kalendář rezervací místností a přehled pro členy">Room booking calendar & member dashboard</span></div>
+      <div class="proj-card-body">
+        <div class="proj-num">01</div>
+        <div class="proj-name" data-en="Roomly — coworking booking platform" data-cs="Roomly — platforma pro rezervaci coworkingu">Roomly — coworking booking platform</div>
+        <div class="proj-type">Booking · Web app</div>
+        <div class="proj-desc" data-en="Case study: Roomly, a room and desk booking platform designed for small coworking spaces with limited admin overhead." data-cs="Případová studie: Roomly, platforma pro rezervaci místností a stolů navržená pro malé coworkingové prostory s omezenou administrativní kapacitou.">Case study: Roomly, a room and desk booking platform designed for small coworking spaces with limited admin overhead.</div>
+        <div class="proj-tags"><span class="proj-tag">Booking</span><span class="proj-tag">Web app</span><span class="proj-tag">Coworking</span></div>
+      </div>
+    </a>
+
+    <a href="case/proconom-website.html" class="proj-card reveal reveal-delay-1">
+      <div class="proj-card-img-placeholder"><span data-en="New homepage & product catalogue templates" data-cs="Nová domovská stránka a šablony produktového katalogu">New homepage & product catalogue templates</span></div>
+      <div class="proj-card-body">
+        <div class="proj-num">02</div>
+        <div class="proj-name" data-en="Corporate website redesign" data-cs="Redesign firemního webu">Corporate website redesign</div>
+        <div class="proj-type">Corporate web · Agency</div>
+        <div class="proj-desc" data-en="Case study: corporate website redesign delivered during my time at Proconom, rebuilding an outdated client site into a maintainable CMS-driven platform." data-cs="Případová studie: redesign firemního webu realizovaný během mého působení v Proconomu, přestavba zastaralého klientského webu na udržovatelnou platformu řízenou CMS.">Case study: corporate website redesign delivered during my time at Proconom, rebuilding an outdated client site into a maintainable CMS-driven platform.</div>
+        <div class="proj-tags"><span class="proj-tag">Corporate web</span><span class="proj-tag">Agency</span><span class="proj-tag">CMS</span></div>
+      </div>
+    </a>
+
+    <a href="case/subscription-app.html" class="proj-card reveal reveal-delay-2">
+      <div class="proj-card-img-placeholder"><span data-en="Subscription timeline & renewal alerts" data-cs="Timeline předplatných a upozornění na obnovení">Subscription timeline & renewal alerts</span></div>
+      <div class="proj-card-body">
+        <div class="proj-num">03</div>
+        <div class="proj-name" data-en="Subly — subscription manager app" data-cs="Subly — aplikace pro správu předplatných">Subly — subscription manager app</div>
+        <div class="proj-type">Fintech · Mobile</div>
+        <div class="proj-desc" data-en="Case study: Subly, an app that helps people track and cancel unused subscriptions before renewal." data-cs="Případová studie: Subly, aplikace pomáhající lidem sledovat a rušit nevyužitá předplatná před obnovením.">Case study: Subly, an app that helps people track and cancel unused subscriptions before renewal.</div>
+        <div class="proj-tags"><span class="proj-tag">Fintech</span><span class="proj-tag">Mobile</span><span class="proj-tag">Personal finance</span></div>
+      </div>
+    </a>
+
+    <a href="case/proconom-app.html" class="proj-card reveal reveal-delay-3">
+      <div class="proj-card-img-placeholder"><span data-en="Quote builder & pricing rules interface" data-cs="Rozhraní tvorby nabídky a cenových pravidel">Quote builder & pricing rules interface</span></div>
+      <div class="proj-card-body">
+        <div class="proj-num">04</div>
+        <div class="proj-name" data-en="Internal quotation tool" data-cs="Interní nástroj pro tvorbu nabídek">Internal quotation tool</div>
+        <div class="proj-type">Internal tool · B2B</div>
+        <div class="proj-desc" data-en="Case study: an internal quotation tool built during my time at Proconom, replacing a spreadsheet-based process prone to pricing errors." data-cs="Případová studie: interní nástroj pro tvorbu nabídek vytvořený během mého působení v Proconomu, nahrazující proces založený na tabulkách náchylný k cenovým chybám.">Case study: an internal quotation tool built during my time at Proconom, replacing a spreadsheet-based process prone to pricing errors.</div>
+        <div class="proj-tags"><span class="proj-tag">Internal tool</span><span class="proj-tag">B2B</span><span class="proj-tag">Workflow</span></div>
+      </div>
+    </a>
+
+  </div>
+
+</main>
+
+<footer class="site-footer" style="border-top:1px solid var(--border-light);margin-top:4rem;">
+  <div class="footer-inner">
+    <span class="footer-copy">© <strong>Ota Škvor</strong>. All rights reserved.</span>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <a href="../index.html" class="back-to-portfolio" data-en="Back to portfolio" data-cs="Zpět na portfolio">Back to portfolio</a>
+      <div class="lang-dropdown" id="langDropdown">
+        <button class="lang-dropdown-trigger" id="langTrigger" aria-haspopup="true" aria-expanded="false">
+          <span class="lang-flag" id="langFlag">EN</span>
+          <svg class="lang-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lang-dropdown-menu" id="langMenu" role="menu">
+          <button class="lang-option active" data-lang="en" role="menuitem">
+            <span>EN</span><span class="lang-option-label">English</span>
+          </button>
+          <button class="lang-option" data-lang="cs" role="menuitem">
+            <span>CZ</span><span class="lang-option-label">Česky</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+<script src="../js/case-i18n.js"></script>
+</body>
+</html>

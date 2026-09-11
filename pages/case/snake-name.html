@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-en="SnakeName — AI snake identification app — Ota Škvor" data-cs="SnakeName — mobilní aplikace na rozpoznávání hadů — Ota Škvor">SnakeName — AI snake identification app — Ota Škvor</title>
+  <meta name="description" data-en="Case study: SnakeName, an AI-powered mobile app that identifies snake species from a photo — designed end to end, from market and user research through a 31-screen prototype to developer handoff." data-cs="Případová studie: SnakeName, mobilní aplikace využívající AI k rozpoznání druhu hada z fotografie — navržená od analýzy trhu a uživatelského výzkumu přes prototyp o 31 obrazovkách až po předání vývojářům." content="Case study: SnakeName, an AI-powered mobile app that identifies snake species from a photo — designed end to end, from market and user research through a 31-screen prototype to developer handoff." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body class="case-body-page">
+
+<nav class="case-nav">
+  <div class="case-nav-inner">
+    <a href="/index.html" class="back-link" data-en="Back" data-cs="Zpět" data-i18n-html>Back</a>
+    <ul class="case-toc">
+      <li><a href="#overview" data-en="Overview" data-cs="Přehled">Overview</a></li>
+      <li><a href="#problem" data-en="Problem" data-cs="Problém">Problem</a></li>
+      <li><a href="#research" data-en="Research" data-cs="Výzkum">Research</a></li>
+      <li><a href="#design" data-en="Design" data-cs="Design">Design</a></li>
+      <li><a href="#development" data-en="Development" data-cs="Vývoj">Development</a></li>
+      <li><a href="#outcome" data-en="Outcome" data-cs="Výsledek">Outcome</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="case-page">
+
+  <!-- HERO -->
+  <div class="case-hero" id="overview">
+    <div class="case-tags">
+      <span class="case-tag" data-en="Master's thesis" data-cs="Diplomová práce">Master's thesis</span>
+      <span class="case-tag" data-en="Mobile app" data-cs="Mobilní aplikace">Mobile app</span>
+      <span class="case-tag">AI / UX</span>
+      <span class="case-tag">iOS &amp; Android</span>
+    </div>
+    <h1 data-en="SnakeName — AI snake identification app" data-cs="SnakeName — mobilní aplikace na rozpoznávání hadů">SnakeName — AI snake identification app</h1>
+    <p class="case-hero-sub" data-en="SnakeName uses AI to recognise a snake's species from a single photo. As UI/UX designer on the project — my master's thesis — I owned market analysis, user research, feature definition and information architecture, UI design, an interactive prototype, and collaboration with the development team." data-cs="SnakeName pomocí umělé inteligence rozpozná druh hada z fotografie. Na projektu — mé diplomové práci — jsem jako UI/UX designér zodpovídal za analýzu trhu, uživatelský výzkum, definování funkcí a informační architekturu, návrh uživatelského rozhraní, interaktivní prototyp a spolupráci s vývojovým týmem.">SnakeName uses AI to recognise a snake's species from a single photo. As UI/UX designer on the project — my master's thesis — I owned market analysis, user research, feature definition and information architecture, UI design, an interactive prototype, and collaboration with the development team.</p>
+
+    <div class="case-stats">
+      <div class="stat"><div class="stat-num">137</div><div class="stat-label" data-en="survey respondents" data-cs="respondentů výzkumu">survey respondents</div></div>
+      <div class="stat"><div class="stat-num">80</div><div class="stat-label" data-en="test participants recruited" data-cs="oslovených testerů">test participants recruited</div></div>
+      <div class="stat"><div class="stat-num">31</div><div class="stat-label" data-en="screens designed" data-cs="navržených obrazovek">screens designed</div></div>
+      <div class="stat"><div class="stat-num">iOS &amp; Android</div><div class="stat-label" data-en="platform" data-cs="platforma">platform</div></div>
+    </div>
+
+    <div class="case-hero-img">
+      <img src="../../img/index-snake.png" alt="SnakeName AI snake identification app" />
+    </div>
+  </div>
+
+  <!-- PROBLEM -->
+  <div class="case-section" id="problem">
+    <h2 data-en="Problem" data-cs="Problém">Problem</h2>
+    <p data-en="We framed the core problem simply: it's difficult to identify a snake quickly and reliably. Many species look nearly identical to a non-expert, and a wrong identification isn't just a labelling mistake — in some situations it can influence whether someone approaches the snake, calls for professional help, or seeks medical care." data-cs="Hlavní uživatelský problém jsme formulovali jednoduše: je obtížné rychle a spolehlivě identifikovat hada. Pro běžného člověka jsou si některé druhy vizuálně velmi podobné a chybná identifikace navíc nemusí znamenat jen špatně pojmenovanou fotografii — v některých situacích může ovlivnit rozhodnutí, zda se k hadovi přiblížit, zavolat odbornou pomoc, nebo vyhledat lékaře.">We framed the core problem simply: it's difficult to identify a snake quickly and reliably. Many species look nearly identical to a non-expert, and a wrong identification isn't just a labelling mistake — in some situations it can influence whether someone approaches the snake, calls for professional help, or seeks medical care.</p>
+    <p data-en="Existing options were slow, regionally limited, or required expert knowledge — searching a field guide, waiting for a reply in an online group, or relying on an app with inconsistent accuracy. The design had to answer three questions: how to make identification as fast as possible, how to present an uncertain result without creating a false sense of certainty, and which information the user needs to see immediately." data-cs="Existující způsoby identifikace hadů byly často pomalé, lokálně omezené nebo vyžadovaly odborné znalosti — hledání v terénním průvodci, čekání na reakci v internetové skupině, nebo spoléhání na aplikaci s nepřesnými výsledky. Návrh musel vyřešit tři hlavní otázky: jak udělat proces identifikace co nejrychlejší, jak prezentovat nejistý výsledek bez vytváření falešného pocitu jistoty, a které informace potřebuje uživatel vidět okamžitě.">Existing options were slow, regionally limited, or required expert knowledge — searching a field guide, waiting for a reply in an online group, or relying on an app with inconsistent accuracy. The design had to answer three questions: how to make identification as fast as possible, how to present an uncertain result without creating a false sense of certainty, and which information the user needs to see immediately.</p>
+  </div>
+
+  <!-- RESEARCH -->
+  <div class="case-section" id="research">
+    <h2 data-en="Market & user research" data-cs="Analýza trhu a uživatelský výzkum">Market & user research</h2>
+
+    <h3 data-en="Market analysis" data-cs="Analýza trhu">Market analysis</h3>
+    <p data-en="I analysed AI-based identification apps, digital encyclopedias, Facebook groups, local rescue organisations and traditional field guides — comparing identification method, accuracy, geographic limits, response speed and UI quality. Automated apps were fast but sometimes inaccurate or dated; expert manual ID was more accurate but slow and often regional; groups depended on member availability; and field guides were thorough but too technical for a first-time user. Together this confirmed room for a tool combining automatic speed, global reach and well-presented information." data-cs="Analyzoval jsem mobilní aplikace využívající AI, digitální encyklopedie, facebookové skupiny, lokální záchranářské organizace i klasické terénní průvodce — porovnával jsem způsob identifikace, přesnost, geografické omezení, rychlost odpovědi a kvalitu uživatelského rozhraní. Automatické aplikace nabízely rychlý výsledek, ale některé měly nízkou přesnost nebo zastaralé rozhraní; ruční identifikace odborníkem byla přesnější, ale pomalejší a často regionálně omezená; skupiny závisely na dostupnosti členů; a určovací klíče byly kvalitní, ale pro nezkušeného uživatele příliš odborné. Analýza potvrdila prostor pro nástroj kombinující rychlost automatického rozpoznávání, globální využití a kvalitně zpracované informace.">I analysed AI-based identification apps, digital encyclopedias, Facebook groups, local rescue organisations and traditional field guides — comparing identification method, accuracy, geographic limits, response speed and UI quality. Automated apps were fast but sometimes inaccurate or dated; expert manual ID was more accurate but slow and often regional; groups depended on member availability; and field guides were thorough but too technical for a first-time user. Together this confirmed room for a tool combining automatic speed, global reach and well-presented information.</p>
+
+    <h3 data-en="User research" data-cs="Uživatelský výzkum">User research</h3>
+    <p data-en="I first defined eleven use cases — among them a resident of a snake-prone area, a tourist in unfamiliar terrain, a nature photographer, a herpetology enthusiast, a rescuer or guide, and a doctor working from a photo of a possible bite. I then ran an English-language online survey distributed through relevant communities, social media and paid promotion, gathering 137 responses from people in different countries." data-cs="Nejprve jsem definoval jedenáct případů použití — mezi nimi obyvatele oblasti s častým výskytem hadů, turistu v neznámém prostředí, fotografa přírody, herpetologického nadšence, záchranáře nebo průvodce a lékaře pracujícího s fotografií možného uštknutí. Následně jsem připravil online dotazník v angličtině, distribuovaný přes tematické komunity, sociální média a placenou propagaci, a získal 137 odpovědí od respondentů z různých zemí.">I first defined eleven use cases — among them a resident of a snake-prone area, a tourist in unfamiliar terrain, a nature photographer, a herpetology enthusiast, a rescuer or guide, and a doctor working from a photo of a possible bite. I then ran an English-language online survey distributed through relevant communities, social media and paid promotion, gathering 137 responses from people in different countries.</p>
+
+    <div class="cs-grid">
+      <div class="cs-block">
+        <h4 data-en="Key finding 1" data-cs="Klíčové zjištění 1">Key finding 1</h4>
+        <p data-en="78.6% of respondents said they would use a reliable snake-identification app." data-cs="78,6 % respondentů uvedlo, že by spolehlivou aplikaci pro identifikaci hadů použilo.">78.6% of respondents said they would use a reliable snake-identification app.</p>
+      </div>
+      <div class="cs-block">
+        <h4 data-en="Key finding 2" data-cs="Klíčové zjištění 2">Key finding 2</h4>
+        <p data-en="Users wanted the most precise species match possible — or, failing that, a narrowed-down set of likely candidates rather than a single guess." data-cs="Uživatelé očekávali co nejpřesnější určení konkrétního druhu, případně alespoň užší skupinu pravděpodobných výsledků místo jediného odhadu.">Users wanted the most precise species match possible — or, failing that, a narrowed-down set of likely candidates rather than a single guess.</p>
+      </div>
+      <div class="cs-block">
+        <h4 data-en="Key finding 3" data-cs="Klíčové zjištění 3">Key finding 3</h4>
+        <p data-en="71.4% wanted to know immediately whether the snake is venomous, alongside bite symptoms, venom type, extra photos, the scientific name and its range." data-cs="71,4 % respondentů chtělo okamžitě zjistit, zda je had jedovatý, a dále požadovali příznaky po uštknutí, typ jedu, další fotografie, vědecký název a oblast výskytu.">71.4% wanted to know immediately whether the snake is venomous, alongside bite symptoms, venom type, extra photos, the scientific name and its range.</p>
+      </div>
+      <div class="cs-block">
+        <h4 data-en="Key finding 4" data-cs="Klíčové zjištění 4">Key finding 4</h4>
+        <p data-en="Some respondents flagged offline functionality as important, since identification often happens without a signal, out in the field." data-cs="Část respondentů upozornila také na důležitost fungování bez připojení k internetu, zejména při pohybu v přírodě.">Some respondents flagged offline functionality as important, since identification often happens without a signal, out in the field.</p>
+      </div>
+    </div>
+
+    <div class="section-img">
+      <div class="section-img-ph" style="aspect-ratio:16/6;">
+        <img src="/img/snake-name-graph.png" alt="">
+      </div>
+      <div class="section-img-caption" data-en="Example question: What additional information should the application provide you with?" data-cs="Příkladná otázka: Jaké další informace by vám měla aplikace poskytnout?">Example question: What additional information should the application provide you with?</div>
+    </div>
+  </div>
+
+  <!-- DESIGN -->
+  <div class="case-section" id="design">
+    <h2 data-en="Design & prototype" data-cs="Design a prototyp">Design & prototype</h2>
+    <p data-en="Research findings became a prioritised feature list, then moved through paper sketches, low-fidelity wireframes, high-fidelity UI and a final interactive prototype." data-cs="Výsledky výzkumu jsem převedl do seznamu funkcí, a prešel do fází skicování, low-fidelity wireframing, high-fidelity UI a finálním interaktivním prototypování.">Research findings became a prioritised feature list, then moved through paper sketches, low-fidelity wireframes, high-fidelity UI and a final interactive prototype.</p>
+    <div class="section-img">
+      <div class="section-img-ph" style="aspect-ratio:16/6;">
+        <img src="/img/snake-name-flow.png" alt="">
+      </div>
+      <div class="section-img-caption" data-en="Flow diagram" data-cs="Flow diagram">Flow diagram</div>
+    </div>
+    <h3 data-en="Wireframes & flow" data-cs="Wireframes & flow">Wireframes & flow</h3>
+    <p data-en="First sketches on paper, focused purely on layout, navigation and content volume — not visual detail. This grew into 13 core wireframes across 4 sections (login, home & profile, identification flow, results & snake info), with a bottom navigation bar for home, starting an identification, and the user profile." data-cs="První návrhy vznikaly na papíře, se zaměřením na layout, navigaci a obsah — žádné detaily. Vzniklo z nich 13 základních wireframů rozdělených do 4 částí (přihlášení, domovská obrazovka a profil, proces identifikace, výsledky a informace o hadovi) se spodní navigační lištou pro domů, spuštění identifikace a profil.">First sketches on paper, focused purely on layout, navigation and content volume — not visual detail. This grew into 13 core wireframes across 4 sections (login, home & profile, identification flow, results & snake info), with a bottom navigation bar for home, starting an identification, and the user profile.</p>
+    <div class="section-img">
+      <div class="section-img-ph" style="aspect-ratio:16/10;">
+        <img src="/img/snake-name-wireframe.png" alt="">
+      </div>
+      <div class="section-img-caption" data-en="Wireframe" data-cs="Wireframe">Wireframe</div>
+    </div>
+    <h3 data-en="Visual identity & UI" data-cs="Vizuální identita & UI">Visual identity & UI</h3>
+    <p data-en="For the interface, I chose Montserrat for its readability, even at smaller sizes, and a primary green color (#57DCA0) that reflects nature while feeling calmer than bold warning tones. This was important for a snake-identification app, as the visual design should not unnecessarily reinforce a sense of danger. Red is therefore reserved exclusively for warnings. A set of reusable components—including buttons, navigation elements, cards, result items, form fields, icons, and status indicators—ensured visual consistency across the interface and made the developer handoff more efficient." data-cs="Pro rozhraní jsem zvolil písmo Montserrat pro jeho čitelnost i v menších velikostech; primární zelenou (#57DCA0), která odkazuje na přírodu, ale působí klidněji než výrazné výstražné odstíny, aby aplikace zaměřená na hady zbytečně neposilovala pocit nebezpečí — červená je vyhrazena výhradně pro varování. Sada opakovaně použitelných komponent (tlačítka, navigace, karty, položky výsledků, formulářová pole, ikony, stavové indikátory) zajistila konzistentní vzhled a usnadnila předání vývojářům.">Montserrat for its readability at small sizes; a primary green (#57DCA0) that links to nature but stays calmer than an alarming warning colour, keeping the app from unintentionally amplifying anxiety around a "dangerous animal" theme — red is reserved strictly for warnings. A reusable component set (buttons, navigation, cards, result items, form fields, icons, status indicators) kept every screen consistent and made handoff to developers straightforward.</p>
+    <div class="section-img">
+      <div class="section-img-ph" style="aspect-ratio:16/6;">
+        <img src="/img/snake-name-style.png" alt="High fidelity UI screens" />
+      </div>
+      <div class="section-img-caption" data-en="Visual identity" data-cs="Vizuální identita">Visual identity</div>
+    </div>
+
+    <h3 data-en="Final UI" data-cs="Finální UI">Final UI</h3>
+    <div class="section-img">
+      <div class="section-img-ph" style="aspect-ratio:16/10;">
+        <img src="/img/snake-name-hifi1.png" alt="High fidelity UI screens" />
+      </div>
+      <div class="section-img-caption" data-en="High fidelity UI example" data-cs="High fidelity UI příklad">High fidelity UI example</div>
+    </div>
+
+    <div class="section-img">
+      <div class="section-img-ph" style="aspect-ratio:16/10;">
+        <img src="/img/snake-name-hifi2.png" alt="High fidelity UI screens" />
+      </div>
+      <div class="section-img-caption" data-en="High fidelity UI example" data-cs="High fidelity UI příklad">High fidelity UI example</div>
+    </div>
+
+    <p data-en="The 13 base wireframes grew into 31 high-fidelity screens, connected into an interactive Figma prototype covering the full journey from login to viewing a snake's detail. Notable iterations included increasing card and navigation contrast, simplifying the profile, moving rarely-used features into the account section, reworking the results hierarchy, adding an empty state before the first identification, and unifying icons and status colours." data-cs="Z 13 základních wireframů vzniklo 31 obrazovek ve vysoké věrnosti, propojených do interaktivního prototypu ve Figmě pokrývajícího celý scénář od přihlášení až po zobrazení detailu hada. Mezi důležité iterace patřilo zvýšení kontrastu karet a navigace, zjednodušení uživatelského profilu, přesunutí méně používaných funkcí do sekce účtu, přepracování hierarchie výsledků, doplnění prázdného stavu před první identifikací a sjednocení ikon a barevných stavů.">The 13 base wireframes grew into 31 high-fidelity screens, connected into an interactive Figma prototype covering the full journey from login to viewing a snake's detail. Notable iterations included increasing card and navigation contrast, simplifying the profile, moving rarely-used features into the account section, reworking the results hierarchy, adding an empty state before the first identification, and unifying icons and status colours.</p>
+
+    <div class="impact-note" data-i18n-html data-en='<strong>Design decision:</strong> Never present a single "definitive" species when the model is not confident — a ranked "Similar species" screen with match percentages keeps the result honest and keeps the user in control.' data-cs='<strong>Designové rozhodnutí:</strong> Nikdy nezobrazovat jediný "definitivní" výsledek, pokud si model není jistý — obrazovka "Similar species" s procentuální mírou shody u více kandidátů udržuje výsledek pravdivý a kontrolu na straně uživatele.'>
+      <strong>Design decision:</strong> Never present a single "definitive" species when the model is not confident — a ranked "Similar species" screen with match percentages keeps the result honest and keeps the user in control.
+    </div>
+  </div>
+
+  <!-- DEVELOPMENT & TESTING -->
+  <div class="case-section" id="development">
+    <h2 data-en="Development & testing" data-cs="Vývoj a testování">Development & testing</h2>
+    <p data-en="After internal validation, the design was handed to the development team as the basis for implementation. During the build, I consulted on feature behaviour, checked fidelity against the design, and adjusted some components and colours based on feedback from the real environment — the outcome was not just a static concept, but a functional mobile app ready for final validation." data-cs="Po interním ověření byl návrh předán vývojovému týmu jako podklad pro implementaci. Během vývoje jsem konzultoval chování jednotlivých funkcí, kontroloval shodu s návrhem a průběžně upravoval některé komponenty a odstíny na základě zpětné vazby z reálného prostředí — výsledkem nebyl pouze statický koncept, ale funkční mobilní aplikace připravená pro závěrečné ověření.">After internal validation, the design was handed to the development team as the basis for implementation. During the build, I consulted on feature behaviour, checked fidelity against the design, and adjusted some components and colours based on feedback from the real environment — the outcome was not just a static concept, but a functional mobile app ready for final validation.</p>
+
+    <p data-en="To validate usability, we prepared qualitative testing of the built app and invited 80 volunteers with experience of similar apps or an interest in snakes, covering overall impression, clarity of the identification process, quality of the results screen, completeness of the snake info, and any usability issues. The number of completed responses ended up too low for statistically reliable conclusions, so the results weren't presented as a full validation." data-cs="Pro ověření použitelnosti jsme připravili kvalitativní testování naprogramované aplikace a pozvali 80 dobrovolníků se zkušeností s podobnými aplikacemi nebo zájmem o hady. Test se zaměřoval na celkový dojem, srozumitelnost procesu identifikace, kvalitu výsledkové obrazovky, úplnost informací o hadovi a případné problémy při používání. Finální počet odevzdaných odpovědí byl ale příliš nízký pro vytvoření spolehlivých závěrů, proto výsledky nebyly prezentovány jako validace použitelnosti.">To validate usability, we prepared qualitative testing of the built app and invited 80 volunteers with experience of similar apps or an interest in snakes, covering overall impression, clarity of the identification process, quality of the results screen, completeness of the snake info, and any usability issues. The number of completed responses ended up too low for statistically reliable conclusions, so the results weren't presented as a full validation.</p>
+    <p data-en="I treat this limitation as an honest and important part of the project — the design went through internal testing and implementation review, but a proper evaluation of wider public behaviour would need another round of moderated testing after public release." data-cs="Tento limit považuji za důležitou součást projektu. Návrh prošel interním testováním a kontrolou implementace, pro důkladné vyhodnocení chování širší veřejnosti by ale bylo nutné provést další kolo moderovaného testování po zveřejnění aplikace.">I treat this limitation as an honest and important part of the project — the design went through internal testing and implementation review, but a proper evaluation of wider public behaviour would need another round of moderated testing after public release.</p>
+
+    <div class="section-img">
+      <div class="section-img-ph" style="aspect-ratio:16/9;">
+        <img src="/img/snake-name-finished.png" alt="Finished mobile application SnakeName">
+      </div>
+      <div class="section-img-caption" data-en="Finished mobile application SnakeName" data-cs="Hotová mobilní aplikace SnakeName">Finished mobile application SnakeName</div>
+    </div>
+  </div>
+
+  <!-- OUTCOME -->
+  <div class="case-section" id="outcome">
+    <h2 data-en="Outcome" data-cs="Výsledek">Outcome</h2>
+    <p data-en="The result is a complete design for a snake-identification app that uses AI. The most important contribution is how it handles an uncertain result: rather than presenting a single species as an unquestionable answer, it transparently offers several similar species and their match rate, so the user gets a fast response while understanding the limits of automatic recognition." data-cs="Výsledkem projektu je kompletní návrh mobilní aplikace pro rozpoznávání hadů pomocí AI. Nejdůležitějším přínosem návrhu je způsob práce s nejistým výsledkem — namísto prezentování jediného druhu jako nezpochybnitelné odpovědi aplikace transparentně nabízí více podobných druhů a jejich míru shody, takže uživatel získává rychlou odpověď a zároveň rozumí limitům automatického rozpoznávání.">The result is a complete design for a snake-identification app that connects AI recognition with clearly structured expert information. The most important contribution is how it handles an uncertain result: rather than presenting a single species as an unquestionable answer, it transparently offers several similar species and their match rate, so the user gets a fast response while understanding the limits of automatic recognition.</p>
+
+    <div class="outcome-grid">
+      <div class="outcome-card">
+        <div class="outcome-num">137</div>
+        <div class="outcome-label" data-en="Survey respondents" data-cs="Respondentů výzkumu">Survey respondents</div>
+        <div class="outcome-desc" data-en="Confirmed demand and helped prioritise what the results screen shows." data-cs="Potvrdili poptávku a pomohli prioritizovat obsah výsledkové obrazovky.">Confirmed demand and helped prioritise what the results screen shows.</div>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-num">80</div>
+        <div class="outcome-label" data-en="test participants recruited" data-cs="oslovených testerů">test participants recruited</div>
+        <div class="outcome-desc" data-en="Covering everyday users, travellers and professionals alike." data-cs="Pokrývajících běžné uživatele, cestovatele i profesionály.">Covering everyday users, travellers and professionals alike.</div>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-num">31</div>
+        <div class="outcome-label" data-en="Designed screens" data-cs="Navržených obrazovek">Designed screens</div>
+        <div class="outcome-desc" data-en="The full app flow, from login to a snake's detail page." data-cs="Kompletní flow aplikace od přihlášení po detail hada.">The full app flow, from login to a snake's detail page.</div>
+      </div>
+      <div class="outcome-card">
+        <div class="outcome-num" data-en="Handed to dev" data-cs="Předáno vývoji">Handed to dev</div>
+        <div class="outcome-label" data-en="Functional app" data-cs="Funkční aplikace">Functional app</div>
+        <div class="outcome-desc" data-en="Design delivered to the development team and turned into a working app." data-cs="Návrh předán vývojovému týmu a převeden do funkční aplikace.">Design delivered to the development team and turned into a working app.</div>
+      </div>
+    </div>
+
+    <div class="impact-note" style="margin-top:1.4rem;" data-i18n-html data-en='<strong>Reflection:</strong> The biggest challenge was balancing simplicity for a first-time user with enough depth for an experienced one. I also learned that a planned sample size doesn&#39;t guarantee a usable test — next time I would run shorter, moderated interviews and tasks instead of relying purely on a self-administered questionnaire.' data-cs='<strong>Reflexe:</strong> Největší výzvou bylo najít rovnováhu mezi jednoduchostí pro člověka, který hada vidí poprvé, a dostatečnou hodnotou pro zkušenější uživatele. Projekt mi také ukázal, že plánovaný počet účastníků ještě nezaručuje kvalitní testovací vzorek — příště bych testování vedl formou kratších moderovaných rozhovorů a úkolů místo spoléhání na dobrovolně vyplněný dotazník.'>
+      <strong>Reflection:</strong> The biggest challenge was balancing simplicity for a first-time user with enough depth for an experienced one. I also learned that a planned sample size doesn't guarantee a usable test — next time I would run shorter, moderated interviews and tasks instead of relying purely on a self-administered questionnaire.
+    </div>
+  </div>
+
+  <!-- PREV / NEXT NAVIGATION -->
+  <div style="display:flex;gap:1rem;align-items:center;justify-content:space-between;padding:3rem 0;border-top:1px solid var(--border-light);margin-top:2rem;flex-wrap:wrap;">
+    <a href="/pages/case/medical-website.html" class="tl-btn" data-en="← Medical website" data-cs="← Zdravotnický web">← Medical website</a>
+    <a href="/pages/case/music-website.html" class="tl-btn" data-en="Music website →" data-cs="Web hudební skupiny →">Music website →</a>
+  </div>
+
+</main>
+
+<footer class="site-footer" style="border-top:1px solid var(--border-light);margin-top:2rem;overflow:visible;">
+  <div class="footer-inner">
+    <span class="footer-copy">© <strong>Ota Škvor</strong>. All rights reserved.</span>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <a href="../../index.html" class="back-to-portfolio" data-en="Back to portfolio" data-cs="Zpět na portfolio">Back to portfolio</a>
+      <div class="lang-dropdown" id="langDropdown">
+        <button class="lang-dropdown-trigger" id="langTrigger" aria-haspopup="true" aria-expanded="false">
+          <span class="lang-flag" id="langFlag">EN</span>
+          <span class="lang-chevron" aria-hidden="true"></span>
+        </button>
+        <div class="lang-dropdown-menu" id="langMenu" role="menu" style="left:0;right:unset;">
+          <button class="lang-option active" data-lang="en" role="menuitem">
+            <span>EN</span><span class="lang-option-label">English</span>
+          </button>
+          <button class="lang-option" data-lang="cs" role="menuitem">
+            <span>CZ</span><span class="lang-option-label">Česky</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../../js/main.js"></script>
+<script src="../../js/case-i18n.js"></script>
+</body>
+</html>
