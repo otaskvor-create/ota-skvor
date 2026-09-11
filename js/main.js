@@ -325,7 +325,7 @@ const translations = {
     section_skills: 'Skills',
     section_about: 'About',
     hero_badge: 'Available for work \u00b7 Brno/Prague',
-    hero_h1: 'Designing <span class="hero-underline">complex</span> <span class="hero-underline">interfaces</span> for desktopp and web-based enterprise software.',
+    hero_h1: 'Designing <span class="hero-underline">complex</span> <span class="hero-underline">interfaces</span> for desktop and web-based enterprise software.',
     hero_sub: '4 years of experience across UI/UX, design systems, and web & mobile design. Currently building a design system at Seyfor.',
     skills_title: 'Core skills', skills_all: 'All skills',
     currently_at: 'Currently at',
