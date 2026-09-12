@@ -287,24 +287,53 @@ document.querySelectorAll('.t-item').forEach((item, i) => {
 /* ============================================
    PAGE TRANSITION (subtle fade)
    ============================================ */
+
+function showPage() {
+  document.body.style.transition = 'opacity 0.35s ease';
+  document.body.style.opacity = '1';
+  document.body.style.overflow = '';
+}
+
 document.querySelectorAll('a[href]').forEach(a => {
   const href = a.getAttribute('href');
-  if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto')) return;
+
+  if (
+    !href ||
+    href.startsWith('#') ||
+    href.startsWith('http') ||
+    href.startsWith('mailto') ||
+    href.startsWith('tel:')
+  ) {
+    return;
+  }
+
   a.addEventListener('click', e => {
+    if (
+      e.ctrlKey ||
+      e.metaKey ||
+      e.shiftKey ||
+      e.altKey ||
+      e.button !== 0
+    ) {
+      return;
+    }
+
     e.preventDefault();
-    document.body.style.opacity = '0';
+
     document.body.style.transition = 'opacity 0.22s ease';
-    setTimeout(() => window.location.href = href, 210);
+    document.body.style.opacity = '0';
+
+    setTimeout(() => {
+      window.location.href = href;
+    }, 210);
   });
 });
 
-// Fade in on page load — opacity:0 is set in CSS so no flash occurs
-document.body.style.transition = 'opacity 0.35s ease';
 requestAnimationFrame(() => {
-  requestAnimationFrame(() => {
-    document.body.style.opacity = '1';
-  });
+  requestAnimationFrame(showPage);
 });
+
+window.addEventListener('pageshow', showPage);
 
 /* ============================================
    LANGUAGE SWITCHER / LANGUAGE DROPDOWN
