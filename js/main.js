@@ -2347,7 +2347,7 @@ function translatePageElements(lang) {
 
 // Tooltip edge detection: flip tooltip alignment when near viewport edges
 function initTooltipEdgeDetection() {
-  const items = document.querySelectorAll('.skill-chip[data-tooltip], .hero-skill-tag[data-tooltip], .edu-subject-link[data-tooltip]');
+  const items = document.querySelectorAll('.skill-chip[data-tooltip], .hero-skill-tag[data-tooltip], .edu-subject-link[data-tooltip], .tl-btn[data-tooltip]');
   const maxW = 260; const pad = 12;
   items.forEach(el => {
     const enter = () => {

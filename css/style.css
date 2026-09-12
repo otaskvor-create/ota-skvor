@@ -189,9 +189,11 @@ h2 { font-size: clamp(1.4rem, 2.5vw, 1.85rem); letter-spacing: -0.015em; }
 .hero-skill-tag.light:hover { border-color: var(--fg); color: var(--fg); transform: translateY(-1px); }
 .hero-skill-tag.key { background: var(--fg); color: var(--bg); border-color: var(--fg); font-weight: 500; }
 .hero-skill-tag,
-.skill-chip { position: relative; }
+.skill-chip,
+.tl-btn[data-tooltip] { position: relative; }
 .hero-skill-tag[data-tooltip]::before,
-.skill-chip[data-tooltip]::before {
+.skill-chip[data-tooltip]::before,
+.tl-btn[data-tooltip]::before {
   content: '';
   position: absolute;
   left: 50%;
@@ -209,7 +211,8 @@ h2 { font-size: clamp(1.4rem, 2.5vw, 1.85rem); letter-spacing: -0.015em; }
   z-index: 999999999;
 }
 .hero-skill-tag[data-tooltip]::after,
-.skill-chip[data-tooltip]::after {
+.skill-chip[data-tooltip]::after,
+.tl-btn[data-tooltip]::after {
   content: attr(data-tooltip);
   position: absolute;
   left: 50%; bottom: calc(100% + 0.8rem);
@@ -236,7 +239,9 @@ h2 { font-size: clamp(1.4rem, 2.5vw, 1.85rem); letter-spacing: -0.015em; }
 .hero-skill-tag[data-tooltip]:hover::before,
 .hero-skill-tag[data-tooltip]:focus-visible::before,
 .skill-chip[data-tooltip]:hover::before,
-.skill-chip[data-tooltip]:focus-visible::before {
+.skill-chip[data-tooltip]:focus-visible::before,
+.tl-btn[data-tooltip]:hover::before,
+.tl-btn[data-tooltip]:focus-visible::before {
   opacity: 1;
   visibility: visible;
   transform: translateX(-50%) scale(1);
@@ -244,14 +249,17 @@ h2 { font-size: clamp(1.4rem, 2.5vw, 1.85rem); letter-spacing: -0.015em; }
 .hero-skill-tag[data-tooltip]:hover::after,
 .hero-skill-tag[data-tooltip]:focus-visible::after,
 .skill-chip[data-tooltip]:hover::after,
-.skill-chip[data-tooltip]:focus-visible::after {
+.skill-chip[data-tooltip]:focus-visible::after,
+.tl-btn[data-tooltip]:hover::after,
+.tl-btn[data-tooltip]:focus-visible::after {
   opacity: 1;
   visibility: visible;
   transform: translateX(-50%) scale(1);
 }
 /* Tooltip alignment helpers when near viewport edges */
 .hero-skill-tag.tooltip-align-left[data-tooltip]::after,
-.skill-chip.tooltip-align-left[data-tooltip]::after {
+.skill-chip.tooltip-align-left[data-tooltip]::after,
+.tl-btn.tooltip-align-left[data-tooltip]::after {
   left: 0 !important;
   right: auto !important;
   transform: translateX(0) scale(0.85) !important;
@@ -259,7 +267,8 @@ h2 { font-size: clamp(1.4rem, 2.5vw, 1.85rem); letter-spacing: -0.015em; }
   transform-origin: left center !important;
 }
 .hero-skill-tag.tooltip-align-left[data-tooltip]::before,
-.skill-chip.tooltip-align-left[data-tooltip]::before {
+.skill-chip.tooltip-align-left[data-tooltip]::before,
+.tl-btn.tooltip-align-left[data-tooltip]::before {
   left: 50% !important;
   right: auto !important;
   transform: translateX(-50%) scale(0.7) !important;
@@ -267,17 +276,22 @@ h2 { font-size: clamp(1.4rem, 2.5vw, 1.85rem); letter-spacing: -0.015em; }
 .hero-skill-tag.tooltip-align-left[data-tooltip]:hover::after,
 .skill-chip.tooltip-align-left[data-tooltip]:hover::after,
 .hero-skill-tag.tooltip-align-left[data-tooltip]:focus-visible::after,
-.skill-chip.tooltip-align-left[data-tooltip]:focus-visible::after {
+.skill-chip.tooltip-align-left[data-tooltip]:focus-visible::after,
+.tl-btn.tooltip-align-left[data-tooltip]:hover::after,
+.tl-btn.tooltip-align-left[data-tooltip]:focus-visible::after {
   transform: translateX(0) scale(1) !important;
 }
 .hero-skill-tag.tooltip-align-left[data-tooltip]:hover::before,
 .skill-chip.tooltip-align-left[data-tooltip]:hover::before,
 .hero-skill-tag.tooltip-align-left[data-tooltip]:focus-visible::before,
-.skill-chip.tooltip-align-left[data-tooltip]:focus-visible::before {
+.skill-chip.tooltip-align-left[data-tooltip]:focus-visible::before,
+.tl-btn.tooltip-align-left[data-tooltip]:hover::before,
+.tl-btn.tooltip-align-left[data-tooltip]:focus-visible::before {
   transform: translateX(-50%) scale(1) !important;
 }
 .hero-skill-tag.tooltip-align-right[data-tooltip]::after,
-.skill-chip.tooltip-align-right[data-tooltip]::after {
+.skill-chip.tooltip-align-right[data-tooltip]::after,
+.tl-btn.tooltip-align-right[data-tooltip]::after {
   left: auto !important;
   right: 0 !important;
   transform: translateX(0) scale(0.85) !important;
@@ -285,7 +299,8 @@ h2 { font-size: clamp(1.4rem, 2.5vw, 1.85rem); letter-spacing: -0.015em; }
   transform-origin: right center !important;
 }
 .hero-skill-tag.tooltip-align-right[data-tooltip]::before,
-.skill-chip.tooltip-align-right[data-tooltip]::before {
+.skill-chip.tooltip-align-right[data-tooltip]::before,
+.tl-btn.tooltip-align-right[data-tooltip]::before {
   left: 50% !important;
   right: auto !important;
   transform: translateX(-50%) scale(0.7) !important;
@@ -293,13 +308,17 @@ h2 { font-size: clamp(1.4rem, 2.5vw, 1.85rem); letter-spacing: -0.015em; }
 .hero-skill-tag.tooltip-align-right[data-tooltip]:hover::after,
 .skill-chip.tooltip-align-right[data-tooltip]:hover::after,
 .hero-skill-tag.tooltip-align-right[data-tooltip]:focus-visible::after,
-.skill-chip.tooltip-align-right[data-tooltip]:focus-visible::after {
+.skill-chip.tooltip-align-right[data-tooltip]:focus-visible::after,
+.tl-btn.tooltip-align-right[data-tooltip]:hover::after,
+.tl-btn.tooltip-align-right[data-tooltip]:focus-visible::after {
   transform: translateX(0) scale(1) !important;
 }
 .hero-skill-tag.tooltip-align-right[data-tooltip]:hover::before,
 .skill-chip.tooltip-align-right[data-tooltip]:hover::before,
 .hero-skill-tag.tooltip-align-right[data-tooltip]:focus-visible::before,
-.skill-chip.tooltip-align-right[data-tooltip]:focus-visible::before {
+.skill-chip.tooltip-align-right[data-tooltip]:focus-visible::before,
+.tl-btn.tooltip-align-right[data-tooltip]:hover::before,
+.tl-btn.tooltip-align-right[data-tooltip]:focus-visible::before {
   transform: translateX(-50%) scale(1) !important;
 }
 .hero-skills-more {
