@@ -1353,6 +1353,7 @@ const translations = {
 
 const tooltipTexts = {
   en: {
+    tooltip_vema: 'Product I’m working on',
     hero_design_systems: 'Design system architecture, libraries and component thinking.',
     hero_uiux_design: 'User interface and experience design for digital products.',
     hero_figma: 'Figma expert for prototypes, systems and handoff.',
@@ -2270,6 +2271,7 @@ const tooltipTexts = {
     skill_photoshop: 'Raster editing, compositing and image preparation in Photoshop.',
   },
   cs: {
+    tooltip_vema: 'Produkt, na kterém pracuji',
     hero_design_systems: 'Architektura design systému, knihovny a komponentní myšlení.',
     hero_uiux_design: 'Návrh uživatelského rozhraní a zkušenosti pro digitální produkty.',
     hero_figma: 'Figma expert pro prototypy, systémy a předání.',
@@ -2337,11 +2339,17 @@ const tooltipTexts = {
   }
 };
 
-let currentLang = localStorage.getItem('portfolio_lang') || 'en';
+const urlParams = new URLSearchParams(window.location.search);
+const urlLang = urlParams.get('lang');
+
+let currentLang =
+  (urlLang === 'cs' || urlLang === 'en')
+    ? urlLang
+    : (localStorage.getItem('portfolio_lang') || 'en');
 
 function updateTooltips(t) {
   const texts = tooltipTexts[currentLang] || {};
-  document.querySelectorAll('.skill-chip[data-tooltip-key], .hero-skill-tag[data-tooltip-key], .edu-subject-link[data-tooltip-key]').forEach(el => {
+  document.querySelectorAll('.skill-chip[data-tooltip-key], .hero-skill-tag[data-tooltip-key], .edu-subject-link[data-tooltip-key], .tl-btn[data-tooltip-key]').forEach(el => {
     const key = el.dataset.tooltipKey;
     const text = texts[key] || '';
     if (text) {
@@ -2413,11 +2421,14 @@ if (typeof updateTooltips === 'function') {
 function applyLang(lang) {
   const t = translations[lang];
   if (!t) return;
+
   currentLang = lang;
   localStorage.setItem('portfolio_lang', lang);
-  // Keeps the <html lang> attribute accurate, and lets pages with their
-  // own independent translation logic (e.g. seyfor.html) react to a
-  // language change via a MutationObserver on this attribute.
+
+  const url = new URL(window.location.href);
+  url.searchParams.set('lang', lang);
+  window.history.replaceState({}, '', url);
+
   document.documentElement.lang = lang;
 
   // Translate [data-i18n-key] subtrees first. On some pages this markup
