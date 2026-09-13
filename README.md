@@ -1,68 +1,21 @@
-# Gregory Muryn-Mukha — Portfolio Clone
+# Ota Škvor — UI/UX Designer Portfolio
 
-A faithful recreation of [murynmukha.com](https://murynmukha.com) including all subpages.
+This repository contains my personal UI/UX design portfolio, showcasing selected projects and case studies from the past few years of professional and freelance work.
 
-## Pages
+The portfolio focuses on product design, UI/UX, design systems, and digital experiences across web, mobile, and enterprise software. Each case study provides an overview of the project context, design challenges, my role and approach, key decisions, and the resulting solution.
 
-- `/index.html` — Homepage (Services, Work, Experience, Publications, About)
-- `/pages/voiceflow.html` — Voiceflow case study
-- `/pages/chattermill.html` — Chattermill case study
-- `/pages/invocable.html` — Invocable (coming soon)
+Alongside visual design, the portfolio reflects my interest in the connection between design and development — from reusable components and design systems to responsive implementation and interaction design.
 
-## How to Run
+## Portfolio
 
-### Option 1 — No install needed (recommended)
-Open `index.html` directly in your browser.
+The live portfolio is available here:
 
-> ⚠️ Note: Videos and some remote images load from murynmukha.com directly. You need an internet connection for those assets.
+**https://otaskvor-create.github.io/ota-skvor/**
 
-### Option 2 — Local dev server with live reload
+The website is available in both **English and Czech**.
 
-Requires [Node.js](https://nodejs.org) installed.
+## About
 
-```bash
-# Install dependencies
-npm install
+I am a UI/UX Designer focused on creating clear, scalable, and user-centered digital products. My experience includes product design, enterprise software, design systems, responsive web design, mobile applications, prototyping, and close collaboration with development teams.
 
-# Start live-server with hot reload
-npm run dev
-```
-
-Then open http://localhost:3000 in your browser.
-
-### Option 3 — Simple static server
-
-```bash
-npm run start
-```
-
-Then open http://localhost:3000
-
-### Option 4 — VS Code Live Server extension
-
-1. Install the **Live Server** extension in VS Code
-2. Right-click on `index.html`
-3. Select **"Open with Live Server"**
-
-## Structure
-
-```
-murynmukha/
-├── index.html          # Homepage
-├── package.json        # Dev server scripts
-├── README.md
-├── css/
-│   └── style.css       # All styles
-├── js/
-│   └── main.js         # Interactions (nav, copy, TOC)
-└── pages/
-    ├── voiceflow.html  # Case study
-    ├── chattermill.html # Case study
-    └── invocable.html  # Coming soon
-```
-
-## Notes
-
-- All images and videos are loaded from the live murynmukha.com domain (no local copies needed)
-- Fonts loaded from Google Fonts (requires internet)
-- Fully responsive — works on mobile and desktop
+This portfolio represents a selection of work that best demonstrates my design process, problem-solving approach, and experience working on both complex product environments and smaller digital projects.
