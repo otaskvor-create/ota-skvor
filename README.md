@@ -10,7 +10,7 @@ Alongside visual design, the portfolio reflects my interest in the connection be
 
 The live portfolio is available here:
 
-**https://otaskvor-create.github.io/ota-skvor/**
+**https://otaskvor-create.github.io/portfolio/**
 
 The website is available in both **English and Czech**.
 
